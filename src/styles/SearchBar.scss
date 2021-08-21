@@ -2,11 +2,17 @@
   display: flex;
   align-items: center;
   padding: 0.8rem 1.6rem;
-  border-radius: 16px;
+  border-radius: 1.6rem;
   background: #fcfcfc;
   position: relative;
+  height: 4rem;
 
-  button {
+  &.search-bar-suggestions {
+    border-radius: 1.6rem 1.6rem 0 0;
+    border-bottom: 2px solid #f0f0f0;
+  }
+
+  .btn-icon {
     border-radius: 3rem;
     background-color: #f0f0f0;
     margin-left: 5px;
@@ -37,5 +43,56 @@
     top: -1.4rem;
     left: 1.6rem;
     color: rgb(148, 148, 148);
+  }
+
+  .search-suggestions {
+    position: absolute;
+    font-size: 1.2rem;
+    top: calc(100% + 2px);
+    left: 0;
+    display: block;
+    background-color: #fcfcfc;
+    border-radius: 0 0 1.6rem 1.6rem;
+    width: 100%;
+
+    .search-suggestions-container {
+      margin: 0 1.6rem;
+      max-height: 140px;
+      overflow-y: scroll;
+
+      &::-webkit-scrollbar {
+        width: 2px;
+        overflow: hidden;
+      }
+      &::-webkit-scrollbar-thumb {
+        background: transparent;
+        border-radius: 10px;
+      }
+      &::-webkit-scrollbar-track {
+        background: transparent;
+        border-radius: 0px;
+      }
+      &:hover {
+        &::-webkit-scrollbar-thumb {
+          background: #b3afb3;
+        }
+      }
+    }
+
+    button {
+      background: transparent;
+      width: 100%;
+    }
+
+    .search-suggestion {
+      display: flex;
+      align-items: center;
+      position: relative;
+      padding: 0.8rem 0;
+
+      img {
+        margin-right: 0.8rem;
+      }
+    }
   }
 }

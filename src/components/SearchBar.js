@@ -1,6 +1,7 @@
 import { faSearch, faSpinner } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import React from 'react';
+import React, { useEffect, useRef, useState } from 'react';
+import { useGlobalContext } from '../context';
 import '../styles/SearchBar.scss';
 
 const SearchBar = ({
@@ -10,10 +11,25 @@ const SearchBar = ({
   searchValue,
   setSearchValue,
   searchLoading,
+  searchSuggestions,
+  selectSuggestion,
 }) => {
+  const [searchSuggestionsAvailable, setSearchSuggestionsAvailable] = useState(
+    searchSuggestions.length > 0
+  );
+
+  useEffect(() => {
+    setSearchSuggestionsAvailable(numberOfResults > 0);
+    if (numberOfResults === undefined) setSearchSuggestionsAvailable(undefined);
+  }, [numberOfResults]);
+
   return (
-    <div className="search-bar">
-      {numberOfResults == undefined ? (
+    <div
+      className={`search-bar ${
+        searchSuggestionsAvailable ? 'search-bar-suggestions' : ''
+      }`}
+    >
+      {searchSuggestionsAvailable === undefined ? (
         ''
       ) : !isNaN(numberOfResults) && numberOfResults > 0 ? (
         <div className="number-of-results">
@@ -31,7 +47,7 @@ const SearchBar = ({
         onChange={(e) => setSearchValue(e.target.value)}
       />
       {searchLoading && (
-        <button onClick={() => searchCallback()}>
+        <button className="btn-icon" onClick={() => searchCallback()}>
           <FontAwesomeIcon
             icon={faSpinner}
             className="search-icon spin-animation"
@@ -39,9 +55,35 @@ const SearchBar = ({
         </button>
       )}
       {!searchLoading && (
-        <button onClick={() => searchCallback()}>
+        <button className="btn-icon" onClick={() => searchCallback()}>
           <FontAwesomeIcon icon={faSearch} className="search-icon" />
         </button>
+      )}
+      {searchSuggestionsAvailable && (
+        <section className="search-suggestions">
+          <div className="search-suggestions-container">
+            {searchSuggestions.map((suggestion, index) => (
+              <button
+                onClick={() => {
+                  selectSuggestion(suggestion);
+                  setSearchSuggestionsAvailable(false);
+                }}
+                key={index}
+                className="search-suggestion"
+              >
+                <img
+                  src={`https://www.countryflags.io/${suggestion.country}/flat/24.png`}
+                  alt={suggestion.country}
+                  className="flag"
+                />
+                <p>
+                  {suggestion.name}, {suggestion.country}
+                  {suggestion.state.length > 0 && ', ' + suggestion.state}
+                </p>
+              </button>
+            ))}
+          </div>
+        </section>
       )}
     </div>
   );

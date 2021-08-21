@@ -4,6 +4,7 @@ import '../styles/Home.scss';
 import { faSearch, faSpinner } from '@fortawesome/free-solid-svg-icons';
 import citiesDB from '../data/city.list.json';
 import SearchBar from '../components/SearchBar';
+import { useGlobalContext } from '../context';
 
 const CITY_URL = 'http://localhost:3001/city/';
 
@@ -12,19 +13,14 @@ const Home = () => {
   const [citySuggestions, setCitySuggestions] = useState([]);
   const [isSearchLoading, setIsSearchLoading] = useState(false);
   const [numberOfSearchResults, setNumberOfSearchResults] = useState(undefined);
+  const { city, setCity } = useGlobalContext();
 
-  // async function filter(arr, callback) {
-  //   const fail = Symbol();
-  //   return (
-  //     await Promise.all(
-  //       arr.map(async (item) => ((await callback(item)) ? item : fail))
-  //     )
-  //   ).filter((i) => i !== fail);
-  // }
-
-  // function doAsyncStuff() {
-  //   return Promise.resolve();
-  // }
+  const selectCity = (newCity) => {
+    setCity(newCity);
+    setCitySearch('');
+    setCitySuggestions((searchSuggestions) => (searchSuggestions.length = 0));
+    setNumberOfSearchResults(undefined);
+  };
 
   const searchCities = async () => {
     setCitySuggestions([]);
@@ -50,11 +46,12 @@ const Home = () => {
           setSearchValue={setCitySearch}
           searchLoading={isSearchLoading}
           numberOfResults={numberOfSearchResults}
+          searchSuggestions={citySuggestions}
+          selectSuggestion={selectCity}
         />
-        {citySuggestions.length > 0 &&
-          citySuggestions.map((citySuggestion, index) => (
-            <div key={index}>{citySuggestion.name}</div>
-          ))}
+        {Object.keys(city) > 0 && (
+          <div className="city">Selected city {city.name}</div>
+        )}
       </section>
       <div id="grid-2"></div>
     </main>

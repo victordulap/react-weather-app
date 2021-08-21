@@ -3,15 +3,22 @@ import reducer from './reducer';
 
 const AppContext = React.createContext();
 
-const initialState = {};
+const initialState = {
+  city: {},
+};
 
 const AppProvider = ({ children }) => {
   const [state, dispatch] = useReducer(reducer, initialState);
+
+  const setCity = (newCity) => {
+    dispatch({ type: 'SET_CITY', payload: newCity });
+  };
 
   return (
     <AppContext.Provider
       value={{
         ...state,
+        setCity,
       }}
     >
       {children}
