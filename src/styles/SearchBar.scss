@@ -16,6 +16,13 @@
     border-radius: 3rem;
     background-color: #f0f0f0;
     margin-left: 5px;
+    width: 3rem;
+    height: 3rem;
+  }
+
+  .search-icon {
+    padding: 5px;
+    font-size: 2.8rem;
   }
 
   .search-input {
@@ -30,11 +37,6 @@
     &:-webkit-autofill:active {
       -webkit-box-shadow: 0 0 0 30px #fcfcfc inset !important;
     }
-  }
-
-  .search-icon {
-    padding: 5px;
-    font-size: 2.5rem;
   }
 
   .number-of-results {
@@ -89,6 +91,7 @@
       align-items: center;
       position: relative;
       padding: 0.8rem 0;
+      color: #000;
 
       img {
         margin-right: 0.8rem;

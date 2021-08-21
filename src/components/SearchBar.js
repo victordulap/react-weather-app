@@ -1,6 +1,7 @@
 import { faSearch, faSpinner } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import React, { useEffect, useRef, useState } from 'react';
+import { Link } from 'react-router-dom';
 import { useGlobalContext } from '../context';
 import '../styles/SearchBar.scss';
 
@@ -13,6 +14,7 @@ const SearchBar = ({
   searchLoading,
   searchSuggestions,
   selectSuggestion,
+  setUrlParams,
 }) => {
   const [searchSuggestionsAvailable, setSearchSuggestionsAvailable] = useState(
     searchSuggestions.length > 0
@@ -63,13 +65,21 @@ const SearchBar = ({
         <section className="search-suggestions">
           <div className="search-suggestions-container">
             {searchSuggestions.map((suggestion, index) => (
-              <button
+              <Link
                 onClick={() => {
                   selectSuggestion(suggestion);
                   setSearchSuggestionsAvailable(false);
+                  setUrlParams({
+                    country: suggestion.country,
+                    state_name: suggestion.state,
+                    location_name: suggestion.name,
+                  });
                 }}
                 key={index}
                 className="search-suggestion"
+                to={`/${suggestion.country}/${
+                  suggestion.state.length > 0 ? suggestion.state + '/' : ''
+                }${suggestion.name}`}
               >
                 <img
                   src={`https://www.countryflags.io/${suggestion.country}/flat/24.png`}
@@ -80,7 +90,7 @@ const SearchBar = ({
                   {suggestion.name}, {suggestion.country}
                   {suggestion.state.length > 0 && ', ' + suggestion.state}
                 </p>
-              </button>
+              </Link>
             ))}
           </div>
         </section>

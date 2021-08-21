@@ -14,6 +14,12 @@ function App() {
         <Route path="/about">
           <About />
         </Route>
+        <Route path="/:country/:state_name/:location_name">
+          <Home />
+        </Route>
+        <Route path="/:country/:location_name">
+          <Home />
+        </Route>
         <Route path="*">
           <PageNotFound />
         </Route>

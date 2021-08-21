@@ -5,6 +5,7 @@ const AppContext = React.createContext();
 
 const initialState = {
   city: {},
+  metrics: 'C',
 };
 
 const AppProvider = ({ children }) => {
@@ -14,11 +15,16 @@ const AppProvider = ({ children }) => {
     dispatch({ type: 'SET_CITY', payload: newCity });
   };
 
+  const setMetrics = (metrics) => {
+    dispatch({ type: 'SET_METRICS', payload: metrics });
+  };
+
   return (
     <AppContext.Provider
       value={{
         ...state,
         setCity,
+        setMetrics,
       }}
     >
       {children}

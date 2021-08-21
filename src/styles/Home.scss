@@ -14,8 +14,6 @@ body {
 
 #grid-1 {
   background-color: #fff;
-  padding: 40px;
-  // border-radius: 3rem;
 }
 
 .spin-animation {
@@ -25,6 +23,48 @@ body {
     100% {
       -webkit-transform: rotate(360deg);
       transform: rotate(360deg);
+    }
+  }
+}
+
+.wrapper {
+  margin: 3.2rem;
+}
+
+.main-header {
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+
+  .btn {
+    font-weight: 700;
+    background: transparent;
+    font-size: 2rem;
+    position: relative;
+
+    &.active {
+      &::after {
+        content: '';
+        position: absolute;
+        background-color: #000;
+        width: 100%;
+        height: 3px;
+        top: 100%;
+        left: 0;
+      }
+    }
+  }
+
+  .weather-timespan {
+    &-btn {
+      margin-right: 1.5rem;
+    }
+  }
+
+  .weather-metrics {
+    &-btn {
+      margin-left: 1.5rem;
     }
   }
 }

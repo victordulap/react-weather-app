@@ -22,33 +22,45 @@ app.use((req, res, next) => {
 
 app.listen(PORT, () => console.log(`api is alive on http://localhost:${PORT}`));
 
-// app.get('/t-shirt', (req, res) => {
-//   res.status(200).send({
-//     t: 'vetements',
-//   });
-// });
-
-// app.get('/t-shirt/:id', (req, res) => {
-//   const { id } = req.params;
-
-//   res.status(200).send({
-//     id,
-//     t: 'vetements',
-//   });
-// });
-
+// Utilities
 const getCitiesByName = (name) => {
   return citiesDB.filter(
     (city) => city.name.toUpperCase() === name.toUpperCase()
   );
 };
 
+const getCitiesByCountryAndName = (country, name) => {
+  return citiesDB.filter(
+    (location) =>
+      location.country.toUpperCase() === country.toUpperCase() &&
+      location.name.toUpperCase() === name.toUpperCase()
+  );
+};
+
+const getCitiesByCountryStateAndName = (country, state, name) => {
+  return citiesDB.filter(
+    (location) =>
+      location.country.toUpperCase() === country.toUpperCase() &&
+      location.state.toUpperCase() === state.toUpperCase() &&
+      location.name.toUpperCase() === name.toUpperCase()
+  );
+};
+
+// GET
 app.get('/city/:name', (req, res) => {
   const { name } = req.params;
 
-  console.log(name);
-  console.log(citiesDB.length);
-  console.log(getCitiesByName(name));
-
   res.status(200).send(getCitiesByName(name));
+});
+
+app.get('/city/:country/:name', (req, res) => {
+  const { name, country } = req.params;
+
+  res.status(200).send(getCitiesByCountryAndName(country, name));
+});
+
+app.get('/city/:country/:state/:name', (req, res) => {
+  const { name, country, state } = req.params;
+
+  res.status(200).send(getCitiesByCountryStateAndName(country, state, name));
 });
