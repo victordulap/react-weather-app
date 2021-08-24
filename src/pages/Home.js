@@ -1,11 +1,9 @@
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import React, { useEffect, useRef, useState } from 'react';
 import '../styles/Home.scss';
-import { faSearch, faSpinner } from '@fortawesome/free-solid-svg-icons';
-import citiesDB from '../data/city.list.json';
 import SearchBar from '../components/SearchBar';
 import { useGlobalContext } from '../context';
-import { useParams, useRouteMatch } from 'react-router-dom';
+import { useRouteMatch } from 'react-router-dom';
+import Slider from '../components/Slider';
 
 const CITY_URL = 'http://localhost:3001/city/';
 
@@ -23,6 +21,8 @@ const Home = () => {
   const [weatherTimeSpan, setWeatherTimeSpan] = useState('today');
 
   const { city, setCity, metrics, setMetrics } = useGlobalContext();
+
+  const gridTwoWrapperRef = useRef();
 
   const selectCity = (newCity) => {
     setCity(newCity);
@@ -45,21 +45,19 @@ const Home = () => {
     setIsSearchLoading(false);
   };
 
-  useEffect(() => {
-    console.log(urlParams);
-    // if (
-    //   state_name != undefined &&
-    //   country != undefined &&
-    //   location_name != undefined
-    // ) {
-    //   const response = await fetch(
-    //     CITY_URL + `${country}/${state_name}/${location_name}`
-    //   );
-    //   const data = await response.json();
-    //   console.log(data);
-    //   setCity(data);
-    // } else if (country != undefined && location_name != undefined) {
-    // }
+  useEffect(async () => {
+    const { state_name, country, location_name } = urlParams;
+    if (location_name != undefined) {
+      let fetchURL = CITY_URL;
+      if (state_name != '' && country != '' && location_name != '') {
+        fetchURL += `${country}/${state_name}/${location_name}`;
+      } else if (country != '' && location_name != '') {
+        fetchURL += `${country}/${location_name}`;
+      }
+      const response = await fetch(fetchURL);
+      const data = await response.json();
+      setCity(data);
+    }
   }, [urlParams]);
 
   return (
@@ -83,7 +81,7 @@ const Home = () => {
         </div>
       </section>
       <div id="grid-2">
-        <div className="wrapper">
+        <div className="wrapper" ref={gridTwoWrapperRef}>
           <header className="main-header">
             <div className="weather-timespan">
               <button
@@ -122,6 +120,9 @@ const Home = () => {
               </button>
             </div>
           </header>
+          <main className="weather-expanded-info">
+            <Slider />
+          </main>
         </div>
       </div>
     </main>
