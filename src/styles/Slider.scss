@@ -66,10 +66,10 @@
 
       .slide-footer {
         span {
-          color: rgb(75, 69, 69);
+          color: rgb(182, 179, 179);
 
-          &:last-child {
-            color: rgb(182, 179, 179);
+          &:first-child {
+            color: rgb(75, 69, 69);
           }
         }
       }

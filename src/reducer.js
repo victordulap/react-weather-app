@@ -1,6 +1,6 @@
 const reducer = (state, action) => {
   switch (action.type) {
-    case 'SET_CITY':
+    case 'SET_LOCATION':
       return { ...state, city: action.payload };
     case 'SET_METRICS':
       return { ...state, metrics: action.payload };

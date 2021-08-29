@@ -2,40 +2,44 @@ import { faSearch, faSpinner } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import React, { useEffect, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { useGlobalContext } from '../context';
 import '../styles/SearchBar.scss';
 
-const SearchBar = ({
-  numberOfResults,
-  placeholder,
-  searchCallback,
-  searchValue,
-  setSearchValue,
-  searchLoading,
-  searchSuggestions,
-  selectSuggestion,
-  setUrlParams,
-}) => {
-  const [searchSuggestionsAvailable, setSearchSuggestionsAvailable] = useState(
-    searchSuggestions.length > 0
-  );
+const SearchBar = ({ placeholder, fetchCallback, onSelectSuggestion }) => {
+  const [searchValue, setSearchValue] = useState('');
+  const [searchSuggestions, setSearchSuggestions] = useState([]);
+  const [isSearchLoading, setIsSearchLoading] = useState(false);
+  const [isFirstSearch, setIsFirstSearch] = useState(true);
 
-  useEffect(() => {
-    setSearchSuggestionsAvailable(numberOfResults > 0);
-    if (numberOfResults === undefined) setSearchSuggestionsAvailable(undefined);
-  }, [numberOfResults]);
+  const handleSearch = async () => {
+    console.log('handling search');
+    setSearchSuggestions([]);
+    setIsSearchLoading(true);
+    if (searchValue.length > 1) {
+      setSearchSuggestions(await fetchCallback(searchValue));
+    }
+    setIsSearchLoading(false);
+    setIsFirstSearch(false);
+  };
+
+  const handleSelectSuggestion = (suggestion) => {
+    onSelectSuggestion(suggestion);
+    setSearchValue('');
+    setSearchSuggestions([]);
+    setIsFirstSearch(true);
+  };
 
   return (
     <div
       className={`search-bar ${
-        searchSuggestionsAvailable ? 'search-bar-suggestions' : ''
+        searchSuggestions.length > 0 ? 'search-bar-suggestions' : ''
       }`}
     >
-      {searchSuggestionsAvailable === undefined ? (
+      {isFirstSearch ? (
         ''
-      ) : !isNaN(numberOfResults) && numberOfResults > 0 ? (
+      ) : !isNaN(searchSuggestions.length) && searchSuggestions.length > 0 ? (
         <div className="number-of-results">
-          {numberOfResults} result{numberOfResults > 1 && 's'} found
+          {searchSuggestions.length} result
+          {searchSuggestions.length > 1 && 's'} found
         </div>
       ) : (
         <div className="number-of-results">No results found</div>
@@ -48,34 +52,26 @@ const SearchBar = ({
         value={searchValue}
         onChange={(e) => setSearchValue(e.target.value)}
       />
-      {searchLoading && (
-        <button className="btn-icon" onClick={() => searchCallback()}>
+      {isSearchLoading && (
+        <button className="btn-icon" onClick={handleSearch}>
           <FontAwesomeIcon
             icon={faSpinner}
             className="search-icon spin-animation"
           />
         </button>
       )}
-      {!searchLoading && (
-        <button className="btn-icon" onClick={() => searchCallback()}>
+      {!isSearchLoading && (
+        <button className="btn-icon" onClick={handleSearch}>
           <FontAwesomeIcon icon={faSearch} className="search-icon" />
         </button>
       )}
-      {searchSuggestionsAvailable && (
+      {searchSuggestions.length > 0 && (
         <section className="search-suggestions">
           <div className="search-suggestions-container">
             {searchSuggestions.map((suggestion, index) => (
               <Link
-                onClick={() => {
-                  selectSuggestion(suggestion);
-                  setSearchSuggestionsAvailable(false);
-                  setUrlParams({
-                    country: suggestion.country,
-                    state_name: suggestion.state,
-                    location_name: suggestion.name,
-                  });
-                }}
-                key={index}
+                onClick={() => handleSelectSuggestion(suggestion)}
+                key={`suggestion-${index}`}
                 className="search-suggestion"
                 to={`/${suggestion.country}/${
                   suggestion.state.length > 0 ? suggestion.state + '/' : ''

@@ -4,15 +4,21 @@ import reducer from './reducer';
 const AppContext = React.createContext();
 
 const initialState = {
-  city: {},
+  location: {
+    id: 2643743,
+    name: 'London',
+    state: '',
+    country: 'GB',
+    coord: { lat: 51.50853, lon: -0.12574 },
+  },
   metrics: 'C',
 };
 
 const AppProvider = ({ children }) => {
   const [state, dispatch] = useReducer(reducer, initialState);
 
-  const setCity = (newCity) => {
-    dispatch({ type: 'SET_CITY', payload: newCity });
+  const setLocation = (newLocation) => {
+    dispatch({ type: 'SET_LOCATION', payload: newLocation });
   };
 
   const setMetrics = (metrics) => {
@@ -23,7 +29,7 @@ const AppProvider = ({ children }) => {
     <AppContext.Provider
       value={{
         ...state,
-        setCity,
+        setLocation,
         setMetrics,
       }}
     >

@@ -1,64 +1,69 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import '../styles/Home.scss';
 import SearchBar from '../components/SearchBar';
 import { useGlobalContext } from '../context';
 import { useRouteMatch } from 'react-router-dom';
 import Slider from '../components/Slider';
 
-const CITY_URL = 'http://localhost:3001/city/';
+const LOCATION_URL = 'http://localhost:3001/city/';
+
+/**
+ *
+ * @param  lat location lat
+ * @param  lon location lon
+ * @param  units For temperature in Fahrenheit and wind speed in miles/hour, use units=imperial
+                For temperature in Celsius and wind speed in meter/sec, use units=metric
+ * @returns url for http get request
+ */
+const getWeatherUrl = (lat, lon, units) => {
+  return `https://api.openweathermap.org/data/2.5/onecall?lat=${lat}&lon=${lon}&exclude=minutely&appid=1e48af3b8791122ae401407d6206d2c9&units=${units}`;
+};
+
+// const slidesDataWeek = [];
+// for (let i = 0; i < 7; i++) {
+//   slidesDataWeek.push({
+//     header: 'Mon',
+//     icon: '01d',
+//     footer: ['8', '-8'],
+//   });
+// }
+
+// const slidesDataHourly = [];
+// for (let i = 0; i < 25; i++) {
+//   slidesDataHourly.push({
+//     header: '12',
+//     icon: '02d',
+//     footer: ['12'],
+//   });
+// }
 
 const Home = () => {
+  // url params
   const { params } = useRouteMatch();
   const [urlParams, setUrlParams] = useState({ ...params });
-  // setUrlParams(params);
 
-  // search states
-  const [citySearch, setCitySearch] = useState('');
-  const [citySuggestions, setCitySuggestions] = useState([]);
-  const [isSearchLoading, setIsSearchLoading] = useState(false);
-  const [numberOfSearchResults, setNumberOfSearchResults] = useState(undefined);
+  // slides
+  const [slidesData, setSlidesData] = useState([]);
 
   const [weatherTimeSpan, setWeatherTimeSpan] = useState('today');
+  const { location, setLocation, metrics, setMetrics } = useGlobalContext();
 
-  const { city, setCity, metrics, setMetrics } = useGlobalContext();
-
-  const gridTwoWrapperRef = useRef();
-
-  const selectCity = (newCity) => {
-    setCity(newCity);
-    setCitySearch('');
-    setCitySuggestions((searchSuggestions) => (searchSuggestions.length = 0));
-    setNumberOfSearchResults(undefined);
+  const getWeatherUnits = () => {
+    return metrics === 'C' ? 'metric' : 'imperial';
   };
 
-  const searchCities = async () => {
-    setCitySuggestions([]);
-    setNumberOfSearchResults(undefined);
-    setIsSearchLoading(true);
-    if (citySearch.length > 1) {
-      const response = await fetch(CITY_URL + citySearch);
-      const data = await response.json();
-
-      setCitySuggestions(data);
-      setNumberOfSearchResults(data.length);
-    }
-    setIsSearchLoading(false);
+  const fetchWeatherData = async (lat, lon, units) => {
+    const response = await fetch(getWeatherUrl(lat, lon, units));
+    const data = await response.json();
+    return data;
   };
 
-  useEffect(async () => {
-    const { state_name, country, location_name } = urlParams;
-    if (location_name != undefined) {
-      let fetchURL = CITY_URL;
-      if (state_name != '' && country != '' && location_name != '') {
-        fetchURL += `${country}/${state_name}/${location_name}`;
-      } else if (country != '' && location_name != '') {
-        fetchURL += `${country}/${location_name}`;
-      }
-      const response = await fetch(fetchURL);
-      const data = await response.json();
-      setCity(data);
-    }
-  }, [urlParams]);
+  const fetchLocations = async (locationSearchValue) => {
+    const response = await fetch(LOCATION_URL + locationSearchValue);
+    const data = await response.json();
+
+    return data;
+  };
 
   return (
     <main className="grid">
@@ -66,22 +71,17 @@ const Home = () => {
         <div className="wrapper">
           <SearchBar
             placeholder="Enter city name"
-            searchCallback={searchCities}
-            searchValue={citySearch}
-            setSearchValue={setCitySearch}
-            searchLoading={isSearchLoading}
-            numberOfResults={numberOfSearchResults}
-            searchSuggestions={citySuggestions}
-            selectSuggestion={selectCity}
-            setUrlParams={setUrlParams}
+            fetchCallback={fetchLocations}
+            onSelectSuggestion={setLocation}
+            // setUrlParams={setUrlParams}
           />
-          {Object.keys(city) > 0 && (
-            <div className="city">Selected city {city.name}</div>
+          {Object.keys(location) > 0 && (
+            <div className="city">Selected location {location.name}</div>
           )}
         </div>
       </section>
       <div id="grid-2">
-        <div className="wrapper" ref={gridTwoWrapperRef}>
+        <div className="wrapper">
           <header className="main-header">
             <div className="weather-timespan">
               <button
@@ -121,7 +121,7 @@ const Home = () => {
             </div>
           </header>
           <main className="weather-expanded-info">
-            <Slider />
+            <Slider slidesData={slidesData} />
           </main>
         </div>
       </div>

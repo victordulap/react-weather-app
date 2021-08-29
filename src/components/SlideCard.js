@@ -1,7 +1,7 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useState } from 'react';
 import '../styles/Slider.scss';
 
-const SlideCard = ({ header, iconSrc, footer }) => {
+const SlideCard = ({ header, icon, footer }) => {
   const [isTapped, setIsTapped] = useState(false);
   const onMouseDown = () => {
     setIsTapped(true);
@@ -18,6 +18,10 @@ const SlideCard = ({ header, iconSrc, footer }) => {
       onTouchStart={onMouseDown}
       onTouchEnd={onMouseUp}
       onMouseLeave={onMouseUp}
+      onContextMenu={(e) => {
+        e.preventDefault();
+        e.stopPropagation();
+      }}
       className={`slide-card ${isTapped ? 'grabbing' : ''}`}
     >
       <header className="slide-header">{header}</header>
@@ -27,12 +31,12 @@ const SlideCard = ({ header, iconSrc, footer }) => {
           e.stopPropagation();
           return false;
         }}
-        src={iconSrc}
+        src={`./assets/weather-icons/${icon}.png`}
         alt="sun"
         className="slide-icon"
       />
       <footer className="slide-footer">
-        <span style={footer.length > 1 && { marginRight: '0.5rem' }}>
+        <span style={footer.length > 1 ? { marginRight: '0.5rem' } : {}}>
           {footer[0]}°
         </span>
         {footer.length > 1 && <span>{footer[1]}°</span>}
