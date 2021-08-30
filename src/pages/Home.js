@@ -74,6 +74,21 @@ const Home = () => {
     return metrics === 'C' ? 'metric' : 'imperial';
   };
 
+  const resetCurrentWeather = () => {
+    setCurrentWeather({});
+  };
+
+  const resetWeatherData = () => {
+    setWeatherData({});
+    resetSlides();
+    resetCurrentWeather();
+  };
+
+  const resetSlides = () => {
+    setSlidesDataToday([]);
+    setSlidesDataWeek([]);
+  };
+
   const fetchWeatherData = async (lat, lon) => {
     const response = await fetch(getWeatherUrl(lat, lon, getWeatherUnits()));
     const data = await response.json();
@@ -114,7 +129,7 @@ const Home = () => {
   // if new location is set, get new weather data
   useEffect(() => {
     if (location.name !== undefined) {
-      console.log(location);
+      resetWeatherData();
 
       const { coord } = location;
       // get weather data by coordinates
@@ -122,12 +137,11 @@ const Home = () => {
 
       // slides data
     }
-  }, [location]);
+  }, [location, metrics]);
 
   // if new weather data is set
   useEffect(() => {
     if (weatherData.current !== undefined) {
-      console.log(weatherData);
       // currentWeather.current = weatherData.current;
       setCurrentWeather(weatherData.current);
 

@@ -94,10 +94,13 @@ const Slider = ({ slidesData }) => {
       ref={sliderContainerRef}
     >
       <ul className={`slider`} ref={sliderRef}>
-        {slidesData &&
+        {slidesData.length > 0 ? (
           slidesData.map((slide, index) => {
             return <SlideCard key={`slide-${index}`} {...slide} />;
-          })}
+          })
+        ) : (
+          <p style={{ fontSize: '20px' }}>loading</p>
+        )}
       </ul>
     </div>
   );
