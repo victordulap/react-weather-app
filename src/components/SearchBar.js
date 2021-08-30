@@ -1,17 +1,16 @@
 import { faSearch, faSpinner } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import '../styles/SearchBar.scss';
 
-const SearchBar = ({ placeholder, fetchCallback, onSelectSuggestion }) => {
+const SearchBar = ({ placeholder, fetchCallback }) => {
   const [searchValue, setSearchValue] = useState('');
   const [searchSuggestions, setSearchSuggestions] = useState([]);
   const [isSearchLoading, setIsSearchLoading] = useState(false);
   const [isFirstSearch, setIsFirstSearch] = useState(true);
 
   const handleSearch = async () => {
-    console.log('handling search');
     setSearchSuggestions([]);
     setIsSearchLoading(true);
     if (searchValue.length > 1) {
@@ -21,8 +20,7 @@ const SearchBar = ({ placeholder, fetchCallback, onSelectSuggestion }) => {
     setIsFirstSearch(false);
   };
 
-  const handleSelectSuggestion = (suggestion) => {
-    onSelectSuggestion(suggestion);
+  const handleSelectSuggestion = () => {
     setSearchValue('');
     setSearchSuggestions([]);
     setIsFirstSearch(true);
@@ -70,7 +68,7 @@ const SearchBar = ({ placeholder, fetchCallback, onSelectSuggestion }) => {
           <div className="search-suggestions-container">
             {searchSuggestions.map((suggestion, index) => (
               <Link
-                onClick={() => handleSelectSuggestion(suggestion)}
+                onClick={() => handleSelectSuggestion()}
                 key={`suggestion-${index}`}
                 className="search-suggestion"
                 to={`/${suggestion.country}/${

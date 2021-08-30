@@ -1,7 +1,7 @@
 const reducer = (state, action) => {
   switch (action.type) {
     case 'SET_LOCATION':
-      return { ...state, city: action.payload };
+      return { ...state, location: action.payload };
     case 'SET_METRICS':
       return { ...state, metrics: action.payload };
     default:

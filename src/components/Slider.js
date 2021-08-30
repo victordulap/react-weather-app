@@ -3,6 +3,7 @@ import 'swiper/swiper-bundle.css';
 import '../styles/Slider.scss';
 import SlideCard from './SlideCard';
 import { getPositionX } from './utils/sliderUtils';
+import { getHoursFromUnix } from './utils/timeConverter';
 
 const Slider = ({ slidesData }) => {
   const sliderRef = useRef();
@@ -94,9 +95,9 @@ const Slider = ({ slidesData }) => {
     >
       <ul className={`slider`} ref={sliderRef}>
         {slidesData &&
-          slidesData.map((slide, index) => (
-            <SlideCard key={`slide-${index}`} {...slide} />
-          ))}
+          slidesData.map((slide, index) => {
+            return <SlideCard key={`slide-${index}`} {...slide} />;
+          })}
       </ul>
     </div>
   );

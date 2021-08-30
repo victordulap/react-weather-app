@@ -1,9 +1,13 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import '../styles/Home.scss';
 import SearchBar from '../components/SearchBar';
 import { useGlobalContext } from '../context';
 import { useRouteMatch } from 'react-router-dom';
 import Slider from '../components/Slider';
+import {
+  getDayFromUnix,
+  getHoursFromUnix,
+} from '../components/utils/timeConverter';
 
 const LOCATION_URL = 'http://localhost:3001/city/';
 
@@ -17,6 +21,18 @@ const LOCATION_URL = 'http://localhost:3001/city/';
  */
 const getWeatherUrl = (lat, lon, units) => {
   return `https://api.openweathermap.org/data/2.5/onecall?lat=${lat}&lon=${lon}&exclude=minutely&appid=1e48af3b8791122ae401407d6206d2c9&units=${units}`;
+};
+
+const getLocationUrlParams = (country, state, location) => {
+  return `${country}${state !== undefined ? `/${state}` : ''}/${location}`;
+};
+
+const defaultLocation = {
+  id: 2643743,
+  name: 'London',
+  state: '',
+  country: 'GB',
+  coord: { lat: 51.50853, lon: -0.12574 },
 };
 
 // const slidesDataWeek = [];
@@ -40,10 +56,16 @@ const getWeatherUrl = (lat, lon, units) => {
 const Home = () => {
   // url params
   const { params } = useRouteMatch();
-  const [urlParams, setUrlParams] = useState({ ...params });
+  // const [urlParams, setUrlParams] = useState({});
+
+  // weatherData
+  const [weatherData, setWeatherData] = useState({});
+  // const currentWeather = useRef({});
+  const [currentWeather, setCurrentWeather] = useState({});
 
   // slides
-  const [slidesData, setSlidesData] = useState([]);
+  const [slidesDataToday, setSlidesDataToday] = useState([]);
+  const [slidesDataWeek, setSlidesDataWeek] = useState([]);
 
   const [weatherTimeSpan, setWeatherTimeSpan] = useState('today');
   const { location, setLocation, metrics, setMetrics } = useGlobalContext();
@@ -52,8 +74,8 @@ const Home = () => {
     return metrics === 'C' ? 'metric' : 'imperial';
   };
 
-  const fetchWeatherData = async (lat, lon, units) => {
-    const response = await fetch(getWeatherUrl(lat, lon, units));
+  const fetchWeatherData = async (lat, lon) => {
+    const response = await fetch(getWeatherUrl(lat, lon, getWeatherUnits()));
     const data = await response.json();
     return data;
   };
@@ -61,9 +83,74 @@ const Home = () => {
   const fetchLocations = async (locationSearchValue) => {
     const response = await fetch(LOCATION_URL + locationSearchValue);
     const data = await response.json();
-
     return data;
   };
+
+  // async functions
+  const setLocationAsync = async (url) => {
+    setLocation(await fetchLocations(url));
+  };
+
+  const setWeatherDataAsync = async (lat, lon) => {
+    setWeatherData(await fetchWeatherData(lat, lon));
+  };
+
+  // get url params and set location (if accessed directly from link)
+  useEffect(() => {
+    // if params are given, otherwise default location is London
+    if (params.location_name !== undefined) {
+      // set location by url params
+      const url = getLocationUrlParams(
+        params.country,
+        params.state_name,
+        params.location_name
+      );
+      setLocationAsync(url);
+    } else {
+      setLocation(defaultLocation);
+    }
+  }, [params.country, params.state_name, params.location_name]);
+
+  // if new location is set, get new weather data
+  useEffect(() => {
+    if (location.name !== undefined) {
+      console.log(location);
+
+      const { coord } = location;
+      // get weather data by coordinates
+      setWeatherDataAsync(coord.lat, coord.lon);
+
+      // slides data
+    }
+  }, [location]);
+
+  // if new weather data is set
+  useEffect(() => {
+    if (weatherData.current !== undefined) {
+      console.log(weatherData);
+      // currentWeather.current = weatherData.current;
+      setCurrentWeather(weatherData.current);
+
+      // set slides
+      const dataForTodaySlides = weatherData.hourly.slice(0, 24).map((hour) => {
+        return {
+          header: getHoursFromUnix(hour.dt + weatherData.timezone_offset),
+          icon: hour.weather[0].icon,
+          footer: [Math.round(hour.temp)],
+        };
+      });
+      setSlidesDataToday(dataForTodaySlides);
+
+      const dataForWeekSlides = weatherData.daily.map((day) => {
+        return {
+          header: getDayFromUnix(day.dt + weatherData.timezone_offset),
+          icon: day.weather[0].icon,
+          footer: [Math.round(day.temp.max), Math.round(day.temp.min)],
+        };
+      });
+      setSlidesDataWeek(dataForWeekSlides);
+    }
+  }, [weatherData]);
 
   return (
     <main className="grid">
@@ -72,8 +159,6 @@ const Home = () => {
           <SearchBar
             placeholder="Enter city name"
             fetchCallback={fetchLocations}
-            onSelectSuggestion={setLocation}
-            // setUrlParams={setUrlParams}
           />
           {Object.keys(location) > 0 && (
             <div className="city">Selected location {location.name}</div>
@@ -121,7 +206,16 @@ const Home = () => {
             </div>
           </header>
           <main className="weather-expanded-info">
-            <Slider slidesData={slidesData} />
+            <Slider
+              slidesData={
+                weatherTimeSpan === 'today' ? slidesDataToday : slidesDataWeek
+              }
+            />
+            <div>
+              <p style={{ fontSize: '16px', wordBreak: 'break-word' }}>
+                {JSON.stringify(currentWeather)}
+              </p>
+            </div>
           </main>
         </div>
       </div>

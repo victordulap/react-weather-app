@@ -4,13 +4,7 @@ import reducer from './reducer';
 const AppContext = React.createContext();
 
 const initialState = {
-  location: {
-    id: 2643743,
-    name: 'London',
-    state: '',
-    country: 'GB',
-    coord: { lat: 51.50853, lon: -0.12574 },
-  },
+  location: {},
   metrics: 'C',
 };
 

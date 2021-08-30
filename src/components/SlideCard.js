@@ -31,8 +31,8 @@ const SlideCard = ({ header, icon, footer }) => {
           e.stopPropagation();
           return false;
         }}
-        src={`./assets/weather-icons/${icon}.png`}
-        alt="sun"
+        src={`/assets/weather-icons/${icon}.png`}
+        alt={icon}
         className="slide-icon"
       />
       <footer className="slide-footer">

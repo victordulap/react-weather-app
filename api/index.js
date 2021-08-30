@@ -29,7 +29,7 @@ const getCitiesByName = (name) => {
   );
 };
 
-const getCitiesByCountryAndName = (country, name) => {
+const getCityByCountryAndName = (country, name) => {
   return citiesDB.filter(
     (location) =>
       location.country.toUpperCase() === country.toUpperCase() &&
@@ -37,7 +37,7 @@ const getCitiesByCountryAndName = (country, name) => {
   );
 };
 
-const getCitiesByCountryStateAndName = (country, state, name) => {
+const getCityByCountryStateAndName = (country, state, name) => {
   return citiesDB.filter(
     (location) =>
       location.country.toUpperCase() === country.toUpperCase() &&
@@ -56,11 +56,11 @@ app.get('/city/:name', (req, res) => {
 app.get('/city/:country/:name', (req, res) => {
   const { name, country } = req.params;
 
-  res.status(200).send(getCitiesByCountryAndName(country, name));
+  res.status(200).send(getCityByCountryAndName(country, name)[0]);
 });
 
 app.get('/city/:country/:state/:name', (req, res) => {
   const { name, country, state } = req.params;
 
-  res.status(200).send(getCitiesByCountryStateAndName(country, state, name));
+  res.status(200).send(getCityByCountryStateAndName(country, state, name)[0]);
 });
