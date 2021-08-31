@@ -3,7 +3,15 @@ import 'swiper/swiper-bundle.css';
 import '../styles/Slider.scss';
 import SlideCard from './SlideCard';
 import { getPositionX } from './utils/sliderUtils';
-import { getHoursFromUnix } from './utils/timeConverter';
+
+const placeHolderSlides = [];
+for (let i = 0; i < 10; i++) {
+  placeHolderSlides.push({
+    header: '',
+    icon: '1x1transparent',
+    footer: [''],
+  });
+}
 
 const Slider = ({ slidesData }) => {
   const sliderRef = useRef();
@@ -94,13 +102,21 @@ const Slider = ({ slidesData }) => {
       ref={sliderContainerRef}
     >
       <ul className={`slider`} ref={sliderRef}>
-        {slidesData.length > 0 ? (
-          slidesData.map((slide, index) => {
-            return <SlideCard key={`slide-${index}`} {...slide} />;
-          })
-        ) : (
-          <p style={{ fontSize: '20px' }}>loading</p>
-        )}
+        {slidesData.length > 0
+          ? slidesData.map((slide, index) => {
+              return (
+                <SlideCard
+                  key={`slide-${index}`}
+                  {...slide}
+                  slidesData={slidesData}
+                />
+              );
+            })
+          : placeHolderSlides.map((slide, index) => {
+              return (
+                <SlideCard key={`slide-${index}`} skeleton={true} {...slide} />
+              );
+            })}
       </ul>
     </div>
   );

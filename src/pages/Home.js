@@ -60,8 +60,8 @@ const Home = () => {
 
   // weatherData
   const [weatherData, setWeatherData] = useState({});
-  // const currentWeather = useRef({});
   const [currentWeather, setCurrentWeather] = useState({});
+  const [isWeatherLoading, setIsWeatherLoading] = useState(false);
 
   // slides
   const [slidesDataToday, setSlidesDataToday] = useState([]);
@@ -78,15 +78,15 @@ const Home = () => {
     setCurrentWeather({});
   };
 
+  const resetSlides = () => {
+    setSlidesDataToday([]);
+    setSlidesDataWeek([]);
+  };
+
   const resetWeatherData = () => {
     setWeatherData({});
     resetSlides();
     resetCurrentWeather();
-  };
-
-  const resetSlides = () => {
-    setSlidesDataToday([]);
-    setSlidesDataWeek([]);
   };
 
   const fetchWeatherData = async (lat, lon) => {
@@ -112,6 +112,8 @@ const Home = () => {
 
   // get url params and set location (if accessed directly from link)
   useEffect(() => {
+    // reset WeatherData, start loading state
+    resetWeatherData();
     // if params are given, otherwise default location is London
     if (params.location_name !== undefined) {
       // set location by url params
@@ -130,7 +132,6 @@ const Home = () => {
   useEffect(() => {
     if (location.name !== undefined) {
       resetWeatherData();
-
       const { coord } = location;
       // get weather data by coordinates
       setWeatherDataAsync(coord.lat, coord.lon);
