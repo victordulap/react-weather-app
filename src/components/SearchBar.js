@@ -1,6 +1,6 @@
 import { faSearch, faSpinner } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import React, { useState } from 'react';
+import React, { useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
 import '../styles/SearchBar.scss';
 
@@ -8,7 +8,8 @@ const SearchBar = ({ placeholder, fetchCallback }) => {
   const [searchValue, setSearchValue] = useState('');
   const [searchSuggestions, setSearchSuggestions] = useState([]);
   const [isSearchLoading, setIsSearchLoading] = useState(false);
-  const [isFirstSearch, setIsFirstSearch] = useState(true);
+  const [showResultsNumberLabel, setShowResultsNumberLabel] = useState(false);
+  const inputRef = useRef('inputRef');
 
   const handleSearch = async () => {
     setSearchSuggestions([]);
@@ -17,13 +18,23 @@ const SearchBar = ({ placeholder, fetchCallback }) => {
       setSearchSuggestions(await fetchCallback(searchValue));
     }
     setIsSearchLoading(false);
-    setIsFirstSearch(false);
+    setShowResultsNumberLabel(true);
+    inputRef.current.focus();
   };
 
   const handleSelectSuggestion = () => {
     setSearchValue('');
+    resetSearchSuggestions();
+  };
+
+  const handleUnFocus = () => {
+    // hide suggestions and results number
+    resetSearchSuggestions();
+  };
+
+  const resetSearchSuggestions = () => {
     setSearchSuggestions([]);
-    setIsFirstSearch(true);
+    setShowResultsNumberLabel(false);
   };
 
   return (
@@ -32,7 +43,7 @@ const SearchBar = ({ placeholder, fetchCallback }) => {
         searchSuggestions.length > 0 ? 'search-bar-suggestions' : ''
       }`}
     >
-      {isFirstSearch ? (
+      {!showResultsNumberLabel ? (
         ''
       ) : !isNaN(searchSuggestions.length) && searchSuggestions.length > 0 ? (
         <div className="number-of-results">
@@ -49,6 +60,18 @@ const SearchBar = ({ placeholder, fetchCallback }) => {
         placeholder={placeholder}
         value={searchValue}
         onChange={(e) => setSearchValue(e.target.value)}
+        onBlur={(e) => {
+          // if clicked on suggestion, dont trigger unFocus
+          if (
+            e.relatedTarget !== null &&
+            e.relatedTarget.classList.contains('search-suggestion')
+          ) {
+            // console.log('clicked on suggestion');
+          } else {
+            handleUnFocus();
+          }
+        }}
+        ref={inputRef}
       />
       {isSearchLoading && (
         <button className="btn-icon" onClick={handleSearch}>

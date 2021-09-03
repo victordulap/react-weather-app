@@ -9,7 +9,6 @@
 
   &.search-bar-suggestions {
     border-radius: 1.6rem 1.6rem 0 0;
-    border-bottom: 2px solid #f0f0f0;
   }
 
   .btn-icon {
@@ -50,12 +49,13 @@
   .search-suggestions {
     position: absolute;
     font-size: 1.2rem;
-    top: calc(100% + 2px);
+    top: calc(100%);
     left: 0;
     display: block;
     background-color: #fcfcfc;
     border-radius: 0 0 1.6rem 1.6rem;
     width: 100%;
+    border-top: 2px solid #f0f0f0;
 
     .search-suggestions-container {
       margin: 0 1.6rem;
