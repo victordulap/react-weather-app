@@ -9,7 +9,8 @@ for (let i = 0; i < 10; i++) {
   placeHolderSlides.push({
     header: '',
     icon: '1x1transparent',
-    footer: [''],
+    main: [''],
+    footer: '',
   });
 }
 
@@ -95,6 +96,7 @@ const Slider = ({ slidesData }) => {
       onTouchMove={touchMove}
       onMouseMove={touchMove}
       onTouchEnd={touchEnd}
+      onTouchCancel={touchEnd}
       onMouseUp={touchEnd}
       onMouseLeave={() => {
         if (isDragging.current) touchEnd();
@@ -104,13 +106,7 @@ const Slider = ({ slidesData }) => {
       <ul className={`slider`} ref={sliderRef}>
         {slidesData.length > 0
           ? slidesData.map((slide, index) => {
-              return (
-                <SlideCard
-                  key={`slide-${index}`}
-                  {...slide}
-                  slidesData={slidesData}
-                />
-              );
+              return <SlideCard key={`slide-${index}`} {...slide} />;
             })
           : placeHolderSlides.map((slide, index) => {
               return (

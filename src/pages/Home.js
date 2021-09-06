@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import '../styles/Home.scss';
 import SearchBar from '../components/SearchBar';
 import { useGlobalContext } from '../context';
@@ -35,28 +35,12 @@ const defaultLocation = {
   coord: { lat: 51.50853, lon: -0.12574 },
 };
 
-// const slidesDataWeek = [];
-// for (let i = 0; i < 7; i++) {
-//   slidesDataWeek.push({
-//     header: 'Mon',
-//     icon: '01d',
-//     footer: ['8', '-8'],
-//   });
-// }
-
-// const slidesDataHourly = [];
-// for (let i = 0; i < 25; i++) {
-//   slidesDataHourly.push({
-//     header: '12',
-//     icon: '02d',
-//     footer: ['12'],
-//   });
-// }
-
 const Home = () => {
   // url params
   const { params } = useRouteMatch();
-  // const [urlParams, setUrlParams] = useState({});
+
+  // fetching error
+  const [fetchingError, setFetchingError] = useState(false);
 
   // weatherData
   const [weatherData, setWeatherData] = useState({});
@@ -69,10 +53,6 @@ const Home = () => {
 
   const [weatherTimeSpan, setWeatherTimeSpan] = useState('today');
   const { location, setLocation, metrics, setMetrics } = useGlobalContext();
-
-  const getWeatherUnits = () => {
-    return metrics === 'C' ? 'metric' : 'imperial';
-  };
 
   const resetCurrentWeather = () => {
     setCurrentWeather({});
@@ -90,7 +70,11 @@ const Home = () => {
   };
 
   const fetchWeatherData = async (lat, lon) => {
-    const response = await fetch(getWeatherUrl(lat, lon, getWeatherUnits()));
+    const response = await fetch(getWeatherUrl(lat, lon, metrics));
+    console.log(response.status);
+    if (response.status === 429) {
+      setFetchingError(true);
+    }
     const data = await response.json();
     return data;
   };
@@ -125,6 +109,7 @@ const Home = () => {
       setLocationAsync(url);
     } else {
       setLocation(defaultLocation);
+      setMetrics('metric');
     }
   }, [params.country, params.state_name, params.location_name]);
 
@@ -135,15 +120,12 @@ const Home = () => {
       const { coord } = location;
       // get weather data by coordinates
       setWeatherDataAsync(coord.lat, coord.lon);
-
-      // slides data
     }
   }, [location, metrics]);
 
   // if new weather data is set
   useEffect(() => {
     if (weatherData.current !== undefined) {
-      // currentWeather.current = weatherData.current;
       setCurrentWeather(weatherData.current);
 
       // set slides
@@ -151,7 +133,10 @@ const Home = () => {
         return {
           header: getHoursFromUnix(hour.dt + weatherData.timezone_offset),
           icon: hour.weather[0].icon,
-          footer: [Math.round(hour.temp)],
+          main: [`${Math.round(hour.temp)}°`],
+          footer: `${hour.wind_speed.toFixed(1)} ${
+            metrics === 'metric' ? 'm/s' : 'mph'
+          }`,
         };
       });
       setSlidesDataToday(dataForTodaySlides);
@@ -160,79 +145,95 @@ const Home = () => {
         return {
           header: getDayFromUnix(day.dt + weatherData.timezone_offset),
           icon: day.weather[0].icon,
-          footer: [Math.round(day.temp.max), Math.round(day.temp.min)],
+          main: [
+            `${Math.round(day.temp.max)}°`,
+            `${Math.round(day.temp.min)}°`,
+          ],
+          footer: `${Math.round(day.temp.max)} ${
+            metrics === 'metric' ? 'm/s' : 'mph'
+          }`,
         };
       });
       setSlidesDataWeek(dataForWeekSlides);
     }
-  }, [weatherData]);
+  }, [weatherData, metrics]); // added metrics
+
+  if (fetchingError) {
+    return (
+      <main className="grid grid-error">
+        <h2>ERROR: Too many API calls</h2>
+      </main>
+    );
+  }
 
   return (
     <main className="grid">
-      <section id="grid-1">
-        <div className="wrapper">
-          <SearchBar
-            placeholder="Enter city name"
-            fetchCallback={fetchLocations}
-          />
-          {Object.keys(location) > 0 && (
-            <div className="city">Selected location {location.name}</div>
-          )}
+      <section id="grid-1" className="wrapper">
+        {/* <div className="wrapper"> */}
+        <SearchBar
+          placeholder="Enter city name"
+          fetchCallback={fetchLocations}
+        />
+        <div className="current-weather-data">
+          <div className="selected-location">
+            Selected location {location.name}
+            {', '}
+            {location.state ? `${location.state},` : ''} {location.country}
+          </div>
         </div>
+        {/* </div> */}
       </section>
-      <div id="grid-2">
-        <div className="wrapper">
-          <header className="main-header">
-            <div className="weather-timespan">
-              <button
-                className={`btn weather-timespan-btn ${
-                  weatherTimeSpan === 'today' ? 'active' : ''
-                }`}
-                onClick={() => setWeatherTimeSpan('today')}
-              >
-                Today
-              </button>
-              <button
-                className={`btn weather-timespan-btn ${
-                  weatherTimeSpan === 'week' ? 'active' : ''
-                }`}
-                onClick={() => setWeatherTimeSpan('week')}
-              >
-                Week
-              </button>
-            </div>
-            <div className="weather-metrics">
-              <button
-                className={`btn weather-metrics-btn ${
-                  metrics === 'C' ? 'active' : ''
-                }`}
-                onClick={() => setMetrics('C')}
-              >
-                °C
-              </button>
-              <button
-                className={`btn weather-metrics-btn ${
-                  metrics === 'F' ? 'active' : ''
-                }`}
-                onClick={() => setMetrics('F')}
-              >
-                °F
-              </button>
-            </div>
-          </header>
-          <main className="weather-expanded-info">
-            <Slider
-              slidesData={
-                weatherTimeSpan === 'today' ? slidesDataToday : slidesDataWeek
-              }
-            />
-            <div>
-              <p style={{ fontSize: '16px', wordBreak: 'break-word' }}>
-                {JSON.stringify(currentWeather)}
-              </p>
-            </div>
-          </main>
-        </div>
+      <div id="grid-2" className="wrapper">
+        <header className="main-header">
+          <div className="weather-timespan">
+            <button
+              className={`btn weather-timespan-btn ${
+                weatherTimeSpan === 'today' ? 'active' : ''
+              }`}
+              onClick={() => setWeatherTimeSpan('today')}
+            >
+              Today
+            </button>
+            <button
+              className={`btn weather-timespan-btn ${
+                weatherTimeSpan === 'week' ? 'active' : ''
+              }`}
+              onClick={() => setWeatherTimeSpan('week')}
+            >
+              Week
+            </button>
+          </div>
+          <div className="weather-metrics">
+            <button
+              className={`btn weather-metrics-btn ${
+                metrics === 'metric' ? 'active' : ''
+              }`}
+              onClick={() => setMetrics('metric')}
+            >
+              °C
+            </button>
+            <button
+              className={`btn weather-metrics-btn ${
+                metrics === 'imperial' ? 'active' : ''
+              }`}
+              onClick={() => setMetrics('imperial')}
+            >
+              °F
+            </button>
+          </div>
+        </header>
+        <main className="weather-expanded-info">
+          <Slider
+            slidesData={
+              weatherTimeSpan === 'today' ? slidesDataToday : slidesDataWeek
+            }
+          />
+          <div>
+            <p style={{ fontSize: '16px', wordBreak: 'break-word' }}>
+              {JSON.stringify(currentWeather)}
+            </p>
+          </div>
+        </main>
       </div>
     </main>
   );

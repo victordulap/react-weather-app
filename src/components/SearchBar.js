@@ -59,6 +59,7 @@ const SearchBar = ({ placeholder, fetchCallback }) => {
         name="search-bar"
         placeholder={placeholder}
         value={searchValue}
+        ref={inputRef}
         onChange={(e) => setSearchValue(e.target.value)}
         onBlur={(e) => {
           // if clicked on suggestion, dont trigger unFocus
@@ -71,7 +72,11 @@ const SearchBar = ({ placeholder, fetchCallback }) => {
             handleUnFocus();
           }
         }}
-        ref={inputRef}
+        onKeyDown={(e) => {
+          if (e.key === 'Enter') {
+            handleSearch();
+          }
+        }}
       />
       {isSearchLoading && (
         <button className="btn-icon" onClick={handleSearch}>
