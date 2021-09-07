@@ -5,7 +5,7 @@ const AppContext = React.createContext();
 
 const initialState = {
   location: {},
-  metrics: '',
+  metrics: 'metric',
 };
 
 const AppProvider = ({ children }) => {

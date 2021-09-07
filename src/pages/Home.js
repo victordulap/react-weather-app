@@ -6,8 +6,11 @@ import { useRouteMatch } from 'react-router-dom';
 import Slider from '../components/Slider';
 import {
   getDayFromUnix,
+  getFullDateTimeFromUnix,
   getHoursFromUnix,
 } from '../components/utils/timeConverter';
+import { faWind } from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 const LOCATION_URL = 'http://localhost:3001/city/';
 
@@ -45,6 +48,7 @@ const Home = () => {
   // weatherData
   const [weatherData, setWeatherData] = useState({});
   const [currentWeather, setCurrentWeather] = useState({});
+  const [currentDateTime, setCurrentDateTime] = useState({});
   const [isWeatherLoading, setIsWeatherLoading] = useState(false);
 
   // slides
@@ -71,7 +75,6 @@ const Home = () => {
 
   const fetchWeatherData = async (lat, lon) => {
     const response = await fetch(getWeatherUrl(lat, lon, metrics));
-    console.log(response.status);
     if (response.status === 429) {
       setFetchingError(true);
     }
@@ -127,16 +130,26 @@ const Home = () => {
   useEffect(() => {
     if (weatherData.current !== undefined) {
       setCurrentWeather(weatherData.current);
+      setCurrentDateTime(
+        getFullDateTimeFromUnix(
+          weatherData.current.dt + weatherData.timezone_offset
+        )
+      );
 
       // set slides
       const dataForTodaySlides = weatherData.hourly.slice(0, 24).map((hour) => {
         return {
           header: getHoursFromUnix(hour.dt + weatherData.timezone_offset),
-          icon: hour.weather[0].icon,
+          icon: `/assets/weather-icons/${hour.weather[0].icon}.png`,
           main: [`${Math.round(hour.temp)}°`],
-          footer: `${hour.wind_speed.toFixed(1)} ${
-            metrics === 'metric' ? 'm/s' : 'mph'
-          }`,
+          footer: (
+            <>
+              <FontAwesomeIcon icon={faWind} />
+              {` ${hour.wind_speed.toFixed(1)} ${
+                metrics === 'metric' ? 'm/s' : 'mph'
+              }`}
+            </>
+          ),
         };
       });
       setSlidesDataToday(dataForTodaySlides);
@@ -144,14 +157,19 @@ const Home = () => {
       const dataForWeekSlides = weatherData.daily.map((day) => {
         return {
           header: getDayFromUnix(day.dt + weatherData.timezone_offset),
-          icon: day.weather[0].icon,
+          icon: `/assets/weather-icons/${day.weather[0].icon}.png`,
           main: [
             `${Math.round(day.temp.max)}°`,
             `${Math.round(day.temp.min)}°`,
           ],
-          footer: `${Math.round(day.temp.max)} ${
-            metrics === 'metric' ? 'm/s' : 'mph'
-          }`,
+          footer: (
+            <>
+              <FontAwesomeIcon icon={faWind} />
+              {` ${Math.round(day.temp.max)} ${
+                metrics === 'metric' ? 'm/s' : 'mph'
+              }`}
+            </>
+          ),
         };
       });
       setSlidesDataWeek(dataForWeekSlides);
@@ -169,19 +187,65 @@ const Home = () => {
   return (
     <main className="grid">
       <section id="grid-1" className="wrapper">
-        {/* <div className="wrapper"> */}
         <SearchBar
           placeholder="Enter city name"
           fetchCallback={fetchLocations}
         />
         <div className="current-weather-data">
+          {currentWeather.weather !== undefined && (
+            <section className="weather-data">
+              <div className="split">
+                <img
+                  // key={`current-weather-${
+                  // currentWeather.weather[0].icon
+                  // }-${Math.random()}`}
+                  src={`/assets/weather-icons/${currentWeather.weather[0].icon}.png`}
+                  alt={currentWeather.weather[0].main}
+                  className="weather-icon"
+                />
+                <p className="weather-data-description">
+                  {currentWeather.weather[0].description}
+                </p>
+              </div>
+              <div className="weather-temperature">
+                <h2 className="weather-temperature-number">
+                  {Math.round(currentWeather.temp)}°
+                  {metrics === 'metric' ? 'C' : 'F'}
+                </h2>
+                <p className="weather-temperature-feels-like">
+                  feels like {Math.round(currentWeather.feels_like)}°
+                  {metrics === 'metric' ? 'C' : 'F'}
+                </p>
+              </div>
+              <div className="weather-current-date">
+                <p>
+                  {currentDateTime.date} of {currentDateTime.month}
+                </p>
+                <p>
+                  {currentDateTime.weekDay},{' '}
+                  <strong>{currentDateTime.time}</strong>
+                </p>
+              </div>
+            </section>
+          )}
+
           <div className="selected-location">
-            Selected location {location.name}
-            {', '}
-            {location.state ? `${location.state},` : ''} {location.country}
+            <p>
+              {location.name}
+              {location.state ? `, ${location.state}` : ''}
+            </p>
+            <p>
+              {location.country}
+              {location.country !== undefined && (
+                <img
+                  src={`https://www.countryflags.io/${location.country}/flat/24.png`}
+                  alt={`${location.country} flag`}
+                  style={{ marginLeft: '.6rem' }}
+                />
+              )}
+            </p>
           </div>
         </div>
-        {/* </div> */}
       </section>
       <div id="grid-2" className="wrapper">
         <header className="main-header">

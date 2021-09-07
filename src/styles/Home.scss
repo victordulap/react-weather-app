@@ -1,5 +1,23 @@
+$light-gray: #f7f6f9;
+$medium-gray: #dedce2;
+$dark-gray: #555558;
+
 body {
-  background-color: #f7f6f9;
+  background-color: $light-gray;
+}
+
+.split {
+  display: flex;
+  width: 100%;
+
+  & > * {
+    display: block;
+    flex: 1 1 100%;
+  }
+
+  & > * + * {
+    margin-left: 1rem;
+  }
 }
 
 .grid {
@@ -30,15 +48,84 @@ body {
   flex-direction: column;
   justify-content: space-between;
   min-height: 100vh;
+  width: 100%;
 
   .current-weather-data {
-    font-size: 2rem;
+    margin-top: 2rem;
+    font-size: 1rem;
     line-height: 1.15;
+    flex-grow: 1;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    // width: 100%;
+
+    .selected-location {
+      font-size: 2rem;
+      font-weight: 500;
+      padding: 1.5rem 1.5rem;
+      border-radius: 1.5rem;
+      background-color: $light-gray;
+      background: $light-gray;
+      text-align: center;
+    }
+
+    .weather-data {
+      img {
+        display: block;
+        // width: 100%;
+        height: auto;
+        max-width: 100%;
+      }
+
+      &-description {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.6rem;
+        text-transform: capitalize;
+        font-weight: 500;
+        position: relative;
+
+        &::before {
+          content: '';
+          height: 100%;
+          width: 1px;
+          background-color: $medium-gray;
+          position: absolute;
+          left: calc(-0.5rem - 3px);
+        }
+      }
+    }
+
+    .weather-temperature {
+      font-size: 2rem;
+      line-height: 1.3;
+      margin-top: 1rem;
+
+      &-number {
+        font-size: 4rem;
+        font-weight: 600;
+      }
+
+      &-feels-like {
+        font-weight: 300;
+        color: $dark-gray;
+      }
+    }
+
+    .weather-current-date {
+      color: $dark-gray;
+      font-size: 1.3rem;
+      margin-top: 1em;
+      line-height: 1.3;
+    }
   }
 }
 
 #grid-2 {
-  flex: 0 1 100%;
+  flex: 1 1 100%;
   width: calc(100vw - 300px);
 }
 

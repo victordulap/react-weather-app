@@ -1,4 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
+// import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+// import { faWind } from '@fortawesome/free-solid-svg-icons';
 import '../styles/Slider.scss';
 
 const SlideCard = ({ header, icon, main, footer }) => {
@@ -47,7 +49,7 @@ const SlideCard = ({ header, icon, main, footer }) => {
           e.stopPropagation();
         }}
         key={`${header}-${icon}${footer[0]}${Math.random()}`}
-        src={`/assets/weather-icons/${icon}.png`}
+        src={icon}
         alt={icon}
         className={`slide-icon ${
           icon === '1x1transparent' || !isImageLoaded ? 'skeleton' : ''
