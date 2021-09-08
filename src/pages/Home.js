@@ -136,6 +136,8 @@ const Home = () => {
         )
       );
 
+      console.log(weatherData.current);
+
       // set slides
       const dataForTodaySlides = weatherData.hourly.slice(0, 24).map((hour) => {
         return {
@@ -188,7 +190,7 @@ const Home = () => {
     <main className="grid">
       <section id="grid-1" className="wrapper">
         <SearchBar
-          placeholder="Enter city name"
+          placeholder="Enter place name"
           fetchCallback={fetchLocations}
         />
         <div className="current-weather-data">
@@ -225,6 +227,29 @@ const Home = () => {
                   {currentDateTime.weekDay},{' '}
                   <strong>{currentDateTime.time}</strong>
                 </p>
+              </div>
+              <hr className="full-width-line" />
+              <div className="current-weather-states">
+                {/* clouds */}
+                <article className="current-weather-state">
+                  <img src="/assets/weather-icons/03d.png" alt="cloud img" />
+                  <p>clouds - {currentWeather.clouds}%</p>
+                </article>
+
+                {/* rain */}
+                {currentWeather.rain !== undefined && (
+                  <article className="current-weather-state">
+                    <img src="/assets/weather-icons/09d.png" alt="cloud img" />
+                    <p>rain - {currentWeather.rain['1h'] * 100}%</p>
+                  </article>
+                )}
+                {/* snow */}
+                {currentWeather.snow !== undefined && (
+                  <article className="current-weather-state">
+                    <img src="/assets/weather-icons/13d.png" alt="cloud img" />
+                    <p>rain - {currentWeather.snow['1h'] * 100}%</p>
+                  </article>
+                )}
               </div>
             </section>
           )}

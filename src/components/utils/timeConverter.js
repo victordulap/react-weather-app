@@ -65,10 +65,15 @@ export const getDayFromUnix = (timestamp, longDay) => {
 export const getFullDateTimeFromUnix = (timestamp) => {
   const date = new Date(timestamp * 1000);
 
+  let hours = date.getUTCHours() + '';
+  hours = hours.length === 1 ? '0' + hours : hours;
+  let minutes = date.getUTCMinutes() + '';
+  minutes = minutes.length === 1 ? '0' + minutes : minutes;
+
   return {
     date: getDateWithEndingFromUtcDate(date.getUTCDate()),
     month: monthNames[date.getUTCMonth()],
     weekDay: getWeekDayFromUTCDay(date.getUTCDay(), true),
-    time: `${date.getUTCHours()}:${date.getUTCMinutes()}`,
+    time: `${hours}:${minutes}`,
   };
 };
