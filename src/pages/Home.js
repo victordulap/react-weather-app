@@ -9,8 +9,13 @@ import {
   getFullDateTimeFromUnix,
   getHoursFromUnix,
 } from '../components/utils/timeConverter';
-import { faWind } from '@fortawesome/free-solid-svg-icons';
+import {
+  faArrowDown,
+  faArrowUp,
+  faWind,
+} from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import SemiCircleChart from '../components/SemiCircleChart';
 
 const LOCATION_URL = 'http://localhost:3001/city/';
 
@@ -28,6 +33,70 @@ const getWeatherUrl = (lat, lon, units) => {
 
 const getLocationUrlParams = (country, state, location) => {
   return `${country}${state !== undefined ? `/${state}` : ''}/${location}`;
+};
+
+const getDirectionByDegree = (degree, longName) => {
+  if ((degree >= 0 && degree <= 30) || degree > 330) {
+    return longName ? 'North' : 'N';
+  } else if (degree > 30 && degree <= 60) {
+    return longName ? 'North-East' : 'NE';
+  } else if (degree > 60 && degree <= 120) {
+    return longName ? 'East' : 'E';
+  } else if (degree > 120 && degree <= 150) {
+    return longName ? 'South-East' : 'SE';
+  } else if (degree > 150 && degree <= 210) {
+    return longName ? 'South' : 'S';
+  } else if (degree > 210 && degree <= 240) {
+    return longName ? 'South-West' : 'SW';
+  } else if (degree > 240 && degree <= 300) {
+    return longName ? 'West' : 'W';
+  } else if (degree > 300 && degree <= 330) {
+    return longName ? 'North-West' : 'NW';
+  }
+};
+
+const getVisibilityByMetres = (visibility) => {
+  if (visibility < 40) {
+    return 'dense fog';
+  } else if (visibility < 100) {
+    return 'thick fog';
+  } else if (visibility < 200) {
+    return 'fog';
+  } else if (visibility < 400) {
+    return 'slight fog';
+  } else if (visibility < 1000) {
+    return 'below average';
+  } else if (visibility < 2000) {
+    return 'slightly below average';
+  } else if (visibility < 7000) {
+    return 'average';
+  } else if (visibility < 10000) {
+    return 'good';
+  } else {
+    return 'excelent';
+  }
+};
+
+const getHumidityByPercent = (percent) => {
+  if (percent < 25) {
+    return 'poor low';
+  } else if (percent < 30 || (percent >= 60 && percent < 70)) {
+    return 'fair';
+  } else if (percent < 60) {
+    return 'good';
+  } else {
+    return 'poor high';
+  }
+};
+
+const getPressureByhPa = (hPa) => {
+  if (hPa <= 1009) {
+    return 'low';
+  } else if (hPa > 1009 && hPa <= 1022) {
+    return 'normal';
+  } else {
+    return 'high';
+  }
 };
 
 const defaultLocation = {
@@ -317,11 +386,131 @@ const Home = () => {
               weatherTimeSpan === 'today' ? slidesDataToday : slidesDataWeek
             }
           />
-          <div>
-            <p style={{ fontSize: '16px', wordBreak: 'break-word' }}>
-              {JSON.stringify(currentWeather)}
-            </p>
-          </div>
+          <section className="today-highlights">
+            <h2>Today's Highlights</h2>
+
+            {currentWeather.weather !== undefined && (
+              <div className="today-highlights-cards">
+                <div className="today-highlights-card">
+                  <header className="today-highlights-card-title">
+                    UV Index
+                  </header>
+                  <main className="today-highlights-card-main full-height">
+                    <SemiCircleChart
+                      mainText={Math.round(currentWeather.uvi)}
+                      // list={[0, 3, 6, 9, 12, 15]}
+                      list={[0, 15]}
+                      percent={((currentWeather.uvi / 15) * 100).toFixed(1)}
+                    />
+                  </main>
+                </div>
+                <div className="today-highlights-card">
+                  <header className="today-highlights-card-title">
+                    Wind Status
+                  </header>
+                  <main className="today-highlights-card-main">
+                    <h4 className="today-highlights-card-main-text">
+                      <strong>{currentWeather.wind_speed.toFixed(1)}</strong>{' '}
+                      {metrics === 'metric' ? 'm/s' : 'mph'}
+                    </h4>
+                  </main>
+                  <footer className="today-highlights-card-footer">
+                    <div className="compass">
+                      <div
+                        className="compass-line"
+                        style={{
+                          transform: `rotate(${currentWeather.wind_deg}deg)`,
+                        }}
+                      ></div>
+                    </div>
+                    <p>{getDirectionByDegree(currentWeather.wind_deg)}</p>
+                  </footer>
+                </div>
+                <div className="today-highlights-card">
+                  <h3 className="today-highlights-card-title">
+                    Sunrise & Sunset
+                  </h3>
+                  <main className="today-highlights-card-main">
+                    <div className="sun-time">
+                      <div className="sun-time-sun">
+                        <FontAwesomeIcon
+                          className="sun-time-icon"
+                          icon={faArrowUp}
+                        />
+                      </div>
+                      <p>
+                        {
+                          getFullDateTimeFromUnix(
+                            currentWeather.sunrise + weatherData.timezone_offset
+                          ).time
+                        }
+                      </p>
+                    </div>
+                    <div className="sun-time">
+                      <div className="sun-time-sun">
+                        <FontAwesomeIcon
+                          className="sun-time-icon"
+                          icon={faArrowDown}
+                        />
+                      </div>
+                      <p>
+                        {
+                          getFullDateTimeFromUnix(
+                            currentWeather.sunset + weatherData.timezone_offset
+                          ).time
+                        }
+                      </p>
+                    </div>
+                  </main>
+                </div>
+                <div className="today-highlights-card">
+                  <header className="today-highlights-card-title">
+                    Humidity
+                  </header>
+                  <main className="today-highlights-card-main">
+                    <h4 className="today-highlights-card-main-text">
+                      <strong>{currentWeather.humidity}</strong>
+                      <span className="align-top">%</span>
+                    </h4>
+                  </main>
+                  <footer className="today-highlights-card-footer">
+                    <p>{getHumidityByPercent(currentWeather.humidity)}</p>
+                  </footer>
+                </div>
+                <div className="today-highlights-card">
+                  <header className="today-highlights-card-title">
+                    Visibility
+                  </header>
+                  <main className="today-highlights-card-main">
+                    <h4 className="today-highlights-card-main-text">
+                      <strong>
+                        {metrics === 'metric'
+                          ? Math.round(currentWeather.visibility / 1000)
+                          : Math.round(currentWeather.visibility / 1609)}
+                      </strong>{' '}
+                      {metrics === 'metric' ? 'km' : 'miles'}
+                    </h4>
+                  </main>
+                  <footer className="today-highlights-card-footer">
+                    <p>{getVisibilityByMetres(currentWeather.visibility)}</p>
+                  </footer>
+                </div>
+                <div className="today-highlights-card">
+                  <header className="today-highlights-card-title">
+                    Pressure
+                  </header>
+                  <main className="today-highlights-card-main">
+                    <h4 className="today-highlights-card-main-text">
+                      <strong>{currentWeather.pressure}</strong> hPa
+                    </h4>
+                  </main>
+                  <footer className="today-highlights-card-footer">
+                    <p>{getPressureByhPa(currentWeather.pressure)}</p>
+                  </footer>
+                </div>
+              </div>
+            )}
+          </section>
         </main>
       </div>
     </main>
