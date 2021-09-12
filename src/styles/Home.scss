@@ -5,6 +5,8 @@ $gray-600: #555558;
 
 $accent: #ec6e4c;
 
+$sidepanel-width: 30rem;
+
 body {
   background-color: $gray-100;
 }
@@ -24,14 +26,15 @@ body {
 }
 
 .grid {
-  // display: grid;
+  // display: flex;
   // width: 100%;
-  // height: 100vh;
-  // grid-template-columns: 300px auto;
-  // grid-template-rows: 1fr;
+  // max-width: 100%;
+  // min-height: 100vh;
 
-  display: flex;
+  display: grid;
+  grid-template-columns: $sidepanel-width calc(100% - #{$sidepanel-width});
   width: 100%;
+  max-width: 100vw;
   min-height: 100vh;
 
   &-error {
@@ -51,7 +54,6 @@ body {
 
 #grid-1 {
   background-color: #fff;
-  flex: 0 0 300px;
   border-radius: 0 2rem 2rem 0;
   display: flex;
   flex-direction: column;
@@ -163,8 +165,8 @@ body {
 }
 
 #grid-2 {
-  flex: 1 1 100%;
-  width: calc(100vw - 300px);
+  // max-width: calc(100% - $sidepanel-width);
+
   display: flex;
   flex-direction: column;
 
@@ -209,8 +211,9 @@ body {
 
   .weather-expanded-info {
     margin-top: 3.2rem;
-    max-width: 100%;
-    flex: 1 1 100%;
+    width: 100%;
+    max-width: calc(100vw - $sidepanel-width);
+    flex: 0 1 100%;
     display: flex;
     flex-direction: column;
 
@@ -229,8 +232,8 @@ body {
       &-cards {
         flex: 1 1 100%;
         display: grid;
-        grid-template-columns: repeat(3, minmax(max-content, 1fr));
-        // grid-template-rows: repeat(2, 1fr);
+        grid-template-columns: repeat(3, 1fr);
+        grid-template-rows: repeat(2, 1fr);
         gap: 2rem;
       }
 

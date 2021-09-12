@@ -2,15 +2,13 @@
 
 .semi-circle-chart {
   font-size: 2rem;
-  // width: 9em;
-  // height: 4.5em;
-  width: 100%;
-  // height: 100;
-  padding-bottom: 50%;
+  width: 80%;
+  height: auto;
+  // make the height proportional to width (now 2/1)
+  padding-bottom: 40%;
   margin: 0 auto;
   position: relative;
   overflow: hidden;
-  // background-color: $accent;
 
   &-total-degrees {
     position: absolute;
@@ -33,9 +31,13 @@
     height: 100%;
     border: 1em solid $accent;
     border-top: none;
-    border-bottom-left-radius: 999em;
-    border-bottom-right-radius: 999em;
+    border-bottom-left-radius: 100em;
+    border-bottom-right-radius: 100em;
     transform-origin: 50% 0;
+    transform-style: preserve-3d;
+
+    // hides strange line
+    backface-visibility: hidden;
   }
 
   &-text {
@@ -57,10 +59,12 @@
 
     &:first-of-type {
       left: 2em;
+      text-align: left;
     }
 
     &:last-of-type {
       right: 2em;
+      text-align: right;
     }
   }
 }

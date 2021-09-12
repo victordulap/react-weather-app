@@ -381,11 +381,13 @@ const Home = () => {
           </div>
         </header>
         <main className="weather-expanded-info">
-          <Slider
-            slidesData={
-              weatherTimeSpan === 'today' ? slidesDataToday : slidesDataWeek
-            }
-          />
+          <div style={{ maxWidth: '100%', width: '100%' }}>
+            <Slider
+              slidesData={
+                weatherTimeSpan === 'today' ? slidesDataToday : slidesDataWeek
+              }
+            />
+          </div>
           <section className="today-highlights">
             <h2>Today's Highlights</h2>
 
