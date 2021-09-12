@@ -19,8 +19,6 @@ import SemiCircleChart from '../components/SemiCircleChart';
 
 const LOCATION_URL = 'http://localhost:3001/city/';
 
-console.log(process.env.REACT_APP_WEATHER_API_KEY);
-
 /**
  *
  * @param  lat location lat
@@ -257,6 +255,23 @@ const Home = () => {
     );
   }
 
+  if (currentWeather.dt === undefined) {
+    return (
+      <main className="grid grid-loading">
+        <div class="lds-roller">
+          <div></div>
+          <div></div>
+          <div></div>
+          <div></div>
+          <div></div>
+          <div></div>
+          <div></div>
+          <div></div>
+        </div>
+      </main>
+    );
+  }
+
   return (
     <main className="grid">
       <section id="grid-1" className="wrapper">
@@ -274,7 +289,9 @@ const Home = () => {
                   // }-${Math.random()}`}
                   src={`/assets/weather-icons/${currentWeather.weather[0].icon}.png`}
                   alt={currentWeather.weather[0].main}
-                  className="weather-icon"
+                  className={`weather-icon ${
+                    isWeatherLoading ? 'skeleton' : ''
+                  }`}
                 />
                 <p className="weather-data-description">
                   {currentWeather.weather[0].description}
