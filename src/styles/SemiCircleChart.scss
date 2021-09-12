@@ -10,6 +10,11 @@
   position: relative;
   overflow: hidden;
 
+  @media screen and (max-width: 1250px) {
+    width: 100%;
+    padding-bottom: 50%;
+  }
+
   &-total-degrees {
     position: absolute;
     content: '';

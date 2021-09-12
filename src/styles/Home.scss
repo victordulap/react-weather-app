@@ -5,7 +5,9 @@ $gray-600: #555558;
 
 $accent: #ec6e4c;
 
-$sidepanel-width: 30rem;
+$sidepanel-width-large: 34rem;
+$sidepanel-width-normal: 30rem;
+$sidepanel-width-small: 26rem;
 
 body {
   background-color: $gray-100;
@@ -32,10 +34,29 @@ body {
   // min-height: 100vh;
 
   display: grid;
-  grid-template-columns: $sidepanel-width calc(100% - #{$sidepanel-width});
+  grid-template-columns: $sidepanel-width-normal calc(
+      100% - #{$sidepanel-width-normal}
+    );
   width: 100%;
   max-width: 100vw;
   min-height: 100vh;
+
+  @media screen and (min-width: 1500px) {
+    grid-template-columns: $sidepanel-width-large calc(
+        100% - #{$sidepanel-width-large}
+      );
+  }
+
+  @media screen and (max-width: 1000px) {
+    grid-template-columns: $sidepanel-width-small calc(
+        100% - #{$sidepanel-width-small}
+      );
+  }
+
+  @media screen and (max-width: 750px) {
+    display: flex;
+    flex-direction: column;
+  }
 
   &-error {
     background-color: #f1dbdb;
@@ -62,6 +83,10 @@ body {
   width: 100%;
   box-shadow: 0px 0px 10px -8px rgba(94, 94, 94, 0.33);
 
+  @media screen and (max-width: 750px) {
+    border-radius: 0 0 2rem 2rem;
+  }
+
   .current-weather-data {
     font-size: 1rem;
     line-height: 1.15;
@@ -80,6 +105,17 @@ body {
       background-color: $gray-100;
       background: $gray-100;
       text-align: center;
+
+      @media screen and (max-width: 750px) {
+        order: 1;
+        margin: 2em auto;
+        width: 100%;
+        font-size: 1.8rem;
+      }
+
+      @media screen and (min-width: 1500px) {
+        font-size: 3rem;
+      }
     }
 
     .weather-data {
@@ -88,6 +124,11 @@ body {
       flex-direction: column;
       flex: 1 1 100%;
       justify-content: space-evenly;
+
+      @media screen and (max-width: 750px) {
+        order: 2;
+        margin: 0;
+      }
 
       img {
         display: block;
@@ -106,6 +147,14 @@ body {
         font-weight: 500;
         position: relative;
 
+        @media screen and (max-width: 750px) {
+          font-size: 3rem;
+        }
+
+        @media screen and (min-width: 1500px) {
+          font-size: 2rem;
+        }
+
         &::before {
           content: '';
           height: 100%;
@@ -121,14 +170,24 @@ body {
       font-size: 2rem;
       line-height: 1.3;
 
-      &-number {
+      @media screen and (max-width: 750px) {
+        margin: 1.5em 0;
         font-size: 4rem;
+      }
+
+      @media screen and (min-width: 1500px) {
+        font-size: 3rem;
+      }
+
+      &-number {
+        font-size: 1.5em;
         font-weight: 600;
       }
 
       &-feels-like {
         font-weight: 300;
         color: $gray-600;
+        font-size: 0.75em;
       }
     }
 
@@ -136,10 +195,23 @@ body {
       color: $gray-600;
       font-size: 1.3rem;
       line-height: 1.3;
+
+      @media screen and (max-width: 750px) {
+        font-size: 1.6rem;
+        line-height: 1.4;
+        margin-bottom: 2em;
+      }
+
+      @media screen and (min-width: 1500px) {
+        font-size: 2rem;
+      }
     }
 
     .full-width-line {
       background-color: $gray-200;
+      @media screen and (max-width: 750px) {
+        margin: 2em 0;
+      }
     }
 
     .current-weather-states {
@@ -148,12 +220,20 @@ body {
         align-items: center;
         font-size: 1.4rem;
 
+        @media screen and (min-width: 1500px) {
+          font-size: 2rem;
+        }
+
         img {
           width: 50px;
           max-width: 100%;
           height: auto;
           flex: 1 1 25%;
           margin-right: 0.6rem;
+
+          @media screen and (min-width: 1500px) {
+            width: 75px;
+          }
         }
 
         p {
@@ -212,7 +292,7 @@ body {
   .weather-expanded-info {
     margin-top: 3.2rem;
     width: 100%;
-    max-width: calc(100vw - $sidepanel-width);
+    max-width: calc(100vw - $sidepanel-width-normal);
     flex: 0 1 100%;
     display: flex;
     flex-direction: column;
@@ -233,8 +313,17 @@ body {
         flex: 1 1 100%;
         display: grid;
         grid-template-columns: repeat(3, 1fr);
-        grid-template-rows: repeat(2, 1fr);
+        // grid-template-rows: repeat(max-content, 1fr);
+        grid-auto-rows: 1fr;
         gap: 2rem;
+
+        @media screen and (max-width: 1000px) {
+          grid-template-columns: repeat(2, 1fr);
+        }
+
+        @media screen and (max-width: 750px) {
+          grid-template-columns: 1fr;
+        }
       }
 
       &-card {
@@ -247,18 +336,27 @@ body {
         justify-content: space-between;
         box-shadow: 0px 0px 10px -8px rgba(94, 94, 94, 0.33);
 
+        @media screen and (min-height: 850px) and (min-width: 1000px) {
+          font-size: 2rem;
+          padding: 2.4rem 2.8rem;
+        }
+
         &-title {
-          font-size: 1.5rem;
+          font-size: 1.2em;
           color: $gray-300;
         }
 
         &-main {
           position: relative;
 
-          // &.full-height {
-          //   flex: 1 1 100%;
-          //   margin-top: 1rem;
-          // }
+          &.full-height-center {
+            flex: 1 1 100%;
+            margin-top: 1em;
+            // justify-self: center;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+          }
 
           strong {
             font-size: 1.6em;
@@ -279,7 +377,7 @@ body {
             align-items: center;
 
             &-sun {
-              font-size: 3.3rem;
+              font-size: 2.8em;
               width: 1em;
               height: 1em;
               background-color: $accent;
@@ -290,10 +388,13 @@ body {
             }
 
             &-icon {
-              // font-size: 2rem;
               width: 0.55em;
               height: 0.55em;
               opacity: 0.35;
+            }
+
+            p {
+              font-size: 1.2em;
             }
 
             & > * + * {
@@ -306,7 +407,7 @@ body {
           display: flex;
           align-items: center;
           font-weight: 500;
-          font-size: 1.55rem;
+          font-size: 1.15em;
           text-transform: capitalize;
 
           & > * + * {
@@ -315,7 +416,7 @@ body {
         }
 
         .compass {
-          font-size: 2.5rem;
+          font-size: 1.5em;
           width: 1em;
           height: 1em;
           border: 1px solid $gray-300;
@@ -324,17 +425,13 @@ body {
           display: flex;
           align-items: center;
           justify-content: center;
-          // padding: 0.54em;
 
           &-line {
-            // font-size: 0.35rem;
             width: 0;
             height: 0;
             border-left: 0.105em solid transparent;
             border-right: 0.105em solid transparent;
             border-bottom: 0.6em solid $accent;
-            // transform: rotate(240deg);
-
             border-radius: 100%;
           }
         }

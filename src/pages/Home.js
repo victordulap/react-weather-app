@@ -397,7 +397,7 @@ const Home = () => {
                   <header className="today-highlights-card-title">
                     UV Index
                   </header>
-                  <main className="today-highlights-card-main full-height">
+                  <main className="today-highlights-card-main full-height-center">
                     <SemiCircleChart
                       mainText={Math.round(currentWeather.uvi)}
                       // list={[0, 3, 6, 9, 12, 15]}
@@ -432,7 +432,7 @@ const Home = () => {
                   <h3 className="today-highlights-card-title">
                     Sunrise & Sunset
                   </h3>
-                  <main className="today-highlights-card-main">
+                  <main className="today-highlights-card-main full-height-center">
                     <div className="sun-time">
                       <div className="sun-time-sun">
                         <FontAwesomeIcon
