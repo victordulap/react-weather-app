@@ -19,6 +19,8 @@ import SemiCircleChart from '../components/SemiCircleChart';
 
 const LOCATION_URL = 'http://localhost:3001/city/';
 
+console.log(process.env.REACT_APP_WEATHER_API_KEY);
+
 /**
  *
  * @param  lat location lat
@@ -28,7 +30,7 @@ const LOCATION_URL = 'http://localhost:3001/city/';
  * @returns url for http get request
  */
 const getWeatherUrl = (lat, lon, units) => {
-  return `https://api.openweathermap.org/data/2.5/onecall?lat=${lat}&lon=${lon}&exclude=minutely&appid=1e48af3b8791122ae401407d6206d2c9&units=${units}`;
+  return `https://api.openweathermap.org/data/2.5/onecall?lat=${lat}&lon=${lon}&exclude=minutely&appid=${process.env.REACT_APP_WEATHER_API_KEY}&units=${units}`;
 };
 
 const getLocationUrlParams = (country, state, location) => {
