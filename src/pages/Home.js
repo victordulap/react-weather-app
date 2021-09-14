@@ -290,7 +290,7 @@ const Home = () => {
                   src={`/assets/weather-icons/${currentWeather.weather[0].icon}.png`}
                   alt={currentWeather.weather[0].main}
                   className={`weather-icon ${
-                    isWeatherLoading ? 'skeleton' : ''
+                    currentWeather.dt === undefined ? 'skeleton' : ''
                   }`}
                 />
                 <p className="weather-data-description">
