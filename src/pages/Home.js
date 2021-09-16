@@ -347,13 +347,25 @@ const Home = () => {
               {location.name}
               {location.state ? `, ${location.state}` : ''}
             </p>
-            <p>
-              {location.country}
+            <p
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+              }}
+            >
+              <p>{location.country}</p>
               {location.country !== undefined && (
                 <img
                   src={`https://www.countryflags.io/${location.country}/flat/24.png`}
                   alt={`${location.country} flag`}
-                  style={{ marginLeft: '.6rem' }}
+                  style={{
+                    marginLeft: '.6rem',
+                    // verticalAlign: 'middle',
+                    // display: 'inline-block',
+                    // height: '100%',
+                    // transform: 'translateY(3px)',
+                  }}
                 />
               )}
             </p>

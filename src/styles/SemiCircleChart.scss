@@ -15,6 +15,12 @@
     padding-bottom: 50%;
   }
 
+  @media screen and (min-width: 1750px) {
+    width: 25rem;
+    padding-bottom: 0;
+    height: 12.5rem;
+  }
+
   &-total-degrees {
     position: absolute;
     content: '';

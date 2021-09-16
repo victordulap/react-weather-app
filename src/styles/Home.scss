@@ -7,6 +7,8 @@ $gray-600: #555558;
 
 $accent: #ec6e4c;
 
+$sidepanel-width-xxlarge: 54rem;
+$sidepanel-width-xlarge: 40rem;
 $sidepanel-width-large: 34rem;
 $sidepanel-width-normal: 30rem;
 $sidepanel-width-small: 26rem;
@@ -46,6 +48,18 @@ body {
   @media screen and (min-width: 1500px) {
     grid-template-columns: $sidepanel-width-large calc(
         100% - #{$sidepanel-width-large}
+      );
+  }
+
+  @media screen and (min-width: 1750px) {
+    grid-template-columns: $sidepanel-width-xlarge calc(
+        100% - #{$sidepanel-width-xlarge}
+      );
+  }
+
+  @media screen and (min-width: 2000px) {
+    grid-template-columns: $sidepanel-width-xxlarge calc(
+        100% - #{$sidepanel-width-xxlarge}
       );
   }
 

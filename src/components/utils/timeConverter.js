@@ -74,6 +74,6 @@ export const getFullDateTimeFromUnix = (timestamp) => {
     date: getDateWithEndingFromUtcDate(date.getUTCDate()),
     month: monthNames[date.getUTCMonth()],
     weekDay: getWeekDayFromUTCDay(date.getUTCDay(), true),
-    time: `${hours}:${minutes}`,
+    time: isNaN(hours) ? '...' : `${hours}:${minutes}`,
   };
 };
