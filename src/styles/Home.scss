@@ -401,7 +401,6 @@ body {
   .weather-expanded-info {
     margin-top: 3.2rem;
     width: 100%;
-    max-width: calc(100vw - $sidepanel-width-normal);
     flex: 0 1 100%;
     display: flex;
     flex-direction: column;
