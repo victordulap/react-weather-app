@@ -17,7 +17,7 @@ import {
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import SemiCircleChart from '../components/SemiCircleChart';
 
-const LOCATION_URL = 'http://localhost:3001/city/';
+const LOCATION_URL = 'https://my-api-for-weather-location.herokuapp.com/city/';
 
 /**
  *
