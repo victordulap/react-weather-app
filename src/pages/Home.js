@@ -19,18 +19,6 @@ import SemiCircleChart from '../components/SemiCircleChart';
 
 const LOCATION_URL = 'https://my-api-for-weather-location.herokuapp.com/city/';
 
-/**
- *
- * @param  lat location lat
- * @param  lon location lon
- * @param  units For temperature in Fahrenheit and wind speed in miles/hour, use units=imperial
-                For temperature in Celsius and wind speed in meter/sec, use units=metric
- * @returns url for http get request
- */
-const getWeatherUrl = (lat, lon, units) => {
-  return `https://api.openweathermap.org/data/2.5/onecall?lat=${lat}&lon=${lon}&exclude=minutely&appid=${process.env.REACT_APP_WEATHER_API_KEY}&units=${units}`;
-};
-
 const getLocationUrlParams = (country, state, location) => {
   return `${country}${state !== undefined ? `/${state}` : ''}/${location}`;
 };
@@ -143,10 +131,16 @@ const Home = () => {
   };
 
   const fetchWeatherData = async (lat, lon) => {
-    const response = await fetch(getWeatherUrl(lat, lon, metrics));
-    if (response.status === 429) {
-      setFetchingError(true);
+    const url = `/.netlify/functions/fetch-weather?lat=${lat}&lon=${lon}&units=${metrics}`;
+    const response = await fetch(url);
+    if (!response.ok) {
+      console.log(`Error: ${response.statusText}`);
+      if (response.status === 429) {
+        setFetchingError(true);
+      }
+      return {};
     }
+
     const data = await response.json();
     return data;
   };
@@ -205,8 +199,6 @@ const Home = () => {
         )
       );
 
-      console.log(weatherData.current);
-
       // set slides
       const dataForTodaySlides = weatherData.hourly.slice(0, 24).map((hour) => {
         return {
@@ -258,7 +250,7 @@ const Home = () => {
   if (currentWeather.dt === undefined) {
     return (
       <main className="grid grid-loading">
-        <div class="lds-roller">
+        <div className="lds-roller">
           <div></div>
           <div></div>
           <div></div>
@@ -284,9 +276,6 @@ const Home = () => {
             <section className="weather-data">
               <div className="split">
                 <img
-                  // key={`current-weather-${
-                  // currentWeather.weather[0].icon
-                  // }-${Math.random()}`}
                   src={`/assets/weather-icons/${currentWeather.weather[0].icon}.png`}
                   alt={currentWeather.weather[0].main}
                   className={`weather-icon ${
@@ -354,7 +343,7 @@ const Home = () => {
                 justifyContent: 'center',
               }}
             >
-              <p>{location.country}</p>
+              <span style={{ display: 'block' }}>{location.country}</span>
               {location.country !== undefined && (
                 <img
                   src={`https://www.countryflags.io/${location.country}/flat/24.png`}
