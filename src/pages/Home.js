@@ -12,6 +12,7 @@ import {
 import {
   faArrowDown,
   faArrowUp,
+  faLongArrowAltUp,
   faWind,
 } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -438,12 +439,20 @@ const Home = () => {
                   </main>
                   <footer className="today-highlights-card-footer">
                     <div className="compass">
-                      <div
+                      {/* <div
                         className="compass-line"
                         style={{
                           transform: `rotate(${currentWeather.wind_deg}deg)`,
                         }}
-                      ></div>
+                      ></div> */}
+                      <div
+                        className="compass-arrow"
+                        style={{
+                          transform: `rotate(${currentWeather.wind_deg}deg)`,
+                        }}
+                      >
+                        <FontAwesomeIcon icon={faLongArrowAltUp} />
+                      </div>
                     </div>
                     <p>{getDirectionByDegree(currentWeather.wind_deg)}</p>
                   </footer>
