@@ -275,7 +275,7 @@ const Home = () => {
         <div className="current-weather-data">
           {currentWeather.weather !== undefined && (
             <section className="weather-data">
-              <div className="split">
+              <div className="split weather-current-img-desc">
                 <img
                   src={`/assets/weather-icons/${currentWeather.weather[0].icon}.png`}
                   alt={currentWeather.weather[0].main}

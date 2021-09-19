@@ -1,29 +1,30 @@
 .search-bar {
+  font-size: 1.2rem;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 0.8rem 1.6rem;
-  border-radius: 1.6rem;
+  padding: 0.8em 1.4em;
+  border-radius: 1.6em;
   background: #fcfcfc;
   position: relative;
-  height: 4rem;
+  height: 4em;
   max-width: 100%;
-  font-size: 1rem;
 
   &.search-bar-suggestions {
-    border-radius: 1.6rem 1.6rem 0 0;
+    border-radius: 1.6em 1.6em 0 0;
   }
 
   .btn-icon {
-    border-radius: 3rem;
+    border-radius: 999em;
     background-color: #f0f0f0;
-    // margin-left: 5px;
-    width: 3rem;
-    height: 3rem;
+    width: 3em;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 
     .search-icon {
-      padding: 5px;
-      font-size: 2.8rem;
+      height: 100%;
     }
   }
 
@@ -31,7 +32,7 @@
     width: 100%;
     background: transparent;
     font-weight: 400;
-    // flex: 1;
+    font-size: 1.1em;
 
     // google auto-fill
     &:-webkit-autofill,
@@ -44,28 +45,31 @@
 
   .number-of-results {
     position: absolute;
-    font-size: 1.1rem;
-    top: -1.4rem;
-    left: 1.6rem;
+    top: -1.4em;
+    left: 1.6em;
     color: rgb(148, 148, 148);
   }
 
   .search-suggestions {
     position: absolute;
-    font-size: 1.2rem;
     top: calc(100%);
+    font-size: 0.95em;
     left: 0;
     display: block;
     background-color: #fcfcfc;
-    border-radius: 0 0 1.6rem 1.6rem;
+    border-radius: 0 0 1.6em 1.6em;
     width: 100%;
     border-top: 2px solid #f0f0f0;
     z-index: 999;
 
     .search-suggestions-container {
       margin: 0 1.6rem;
-      max-height: 140px;
+      max-height: 14rem;
       overflow-y: scroll;
+
+      @media screen and (max-width: 750px) {
+        max-height: 20rem;
+      }
 
       &::-webkit-scrollbar {
         width: 2px;
@@ -92,10 +96,11 @@
     }
 
     .search-suggestion {
+      font-size: 1em;
       display: flex;
       align-items: center;
       position: relative;
-      padding: 0.8rem 0;
+      padding: 0.8em 0;
       color: #000;
 
       img {
@@ -105,5 +110,6 @@
   }
 
   @media screen and (max-width: 750px) {
+    font-size: 1.6rem;
   }
 }
