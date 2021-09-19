@@ -46,6 +46,15 @@ const Slider = ({ slidesData }) => {
     sliderRef.current.style.cursor = 'grabbing';
   }
 
+  const animation = () => {
+    setSliderPosition();
+    if (isDragging.current) requestAnimationFrame(animation);
+  };
+
+  const setSliderPosition = () => {
+    sliderRef.current.style.transform = `translateX(${currentTranslate.current}px)`;
+  };
+
   function touchMove(event) {
     if (isDragging.current) {
       const currentPosition = getPositionX(event);
@@ -80,14 +89,6 @@ const Slider = ({ slidesData }) => {
     sliderRef.current.style.cursor = 'grab';
   }
 
-  const animation = () => {
-    setSliderPosition();
-    if (isDragging.current) requestAnimationFrame(animation);
-  };
-
-  const setSliderPosition = () => {
-    sliderRef.current.style.transform = `translateX(${currentTranslate.current}px)`;
-  };
   return (
     <div
       className="slider-container"

@@ -10,9 +10,6 @@
   max-width: 100%;
   font-size: 1rem;
 
-  @media screen and (max-width: 1000px) {
-  }
-
   &.search-bar-suggestions {
     border-radius: 1.6rem 1.6rem 0 0;
   }
@@ -23,11 +20,11 @@
     // margin-left: 5px;
     width: 3rem;
     height: 3rem;
-  }
 
-  .search-icon {
-    padding: 5px;
-    font-size: 2.8rem;
+    .search-icon {
+      padding: 5px;
+      font-size: 2.8rem;
+    }
   }
 
   .search-input {
@@ -105,5 +102,8 @@
         margin-right: 0.8rem;
       }
     }
+  }
+
+  @media screen and (max-width: 750px) {
   }
 }
