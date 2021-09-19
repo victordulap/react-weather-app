@@ -103,6 +103,10 @@
       padding: 0.8em 0;
       color: #000;
 
+      span {
+        font-weight: 600;
+      }
+
       img {
         margin-right: 0.8rem;
       }
@@ -111,5 +115,9 @@
 
   @media screen and (max-width: 750px) {
     font-size: 1.6rem;
+  }
+
+  @media screen and (max-width: 300px) {
+    margin-top: 2rem;
   }
 }

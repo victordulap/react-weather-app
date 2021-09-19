@@ -6,19 +6,29 @@ import '../styles/SearchBar.scss';
 
 const SearchBar = ({ placeholder, fetchCallback }) => {
   const [searchValue, setSearchValue] = useState('');
+  const [oldSearchValue, setOldSearchValue] = useState('');
   const [searchSuggestions, setSearchSuggestions] = useState([]);
   const [isSearchLoading, setIsSearchLoading] = useState(false);
   const [showResultsNumberLabel, setShowResultsNumberLabel] = useState(false);
+  const [isSearchValueShort, setIsSearchValueShort] = useState(false);
   const inputRef = useRef('inputRef');
 
   const handleSearch = async () => {
     setSearchSuggestions([]);
+    setIsSearchValueShort(false);
     setIsSearchLoading(true);
-    if (searchValue.length > 1) {
+
+    let showResNumLabel = true;
+    if (searchValue.length > 2) {
       setSearchSuggestions(await fetchCallback(searchValue));
+      setOldSearchValue(searchValue);
+    } else {
+      setIsSearchValueShort(true);
+      setShowResultsNumberLabel(false);
+      showResNumLabel = false;
     }
     setIsSearchLoading(false);
-    setShowResultsNumberLabel(true);
+    if (showResNumLabel) setShowResultsNumberLabel(true);
     inputRef.current.focus();
   };
 
@@ -43,7 +53,11 @@ const SearchBar = ({ placeholder, fetchCallback }) => {
         searchSuggestions.length > 0 ? 'search-bar-suggestions' : ''
       }`}
     >
-      {!showResultsNumberLabel ? (
+      {isSearchValueShort ? (
+        <div className="number-of-results" style={{ color: '#e07e7e' }}>
+          Enter at least 3 letters
+        </div>
+      ) : !showResultsNumberLabel || isSearchLoading ? (
         ''
       ) : !isNaN(searchSuggestions.length) && searchSuggestions.length > 0 ? (
         <div className="number-of-results">
@@ -109,7 +123,16 @@ const SearchBar = ({ placeholder, fetchCallback }) => {
                   className="flag"
                 />
                 <p>
-                  {suggestion.name}, {suggestion.country}
+                  {
+                    <span>
+                      {suggestion.name.slice(0, oldSearchValue.length)}
+                    </span>
+                  }
+                  {suggestion.name.slice(
+                    oldSearchValue.length,
+                    suggestion.name.length - 1
+                  )}
+                  , {suggestion.country}
                   {suggestion.state.length > 0 && ', ' + suggestion.state}
                 </p>
               </Link>
