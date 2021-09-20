@@ -1,4 +1,9 @@
-import { faSearch, faSpinner } from '@fortawesome/free-solid-svg-icons';
+import {
+  faCross,
+  faSearch,
+  faSpinner,
+  faTimes,
+} from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import React, { useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
@@ -77,15 +82,18 @@ const SearchBar = ({ placeholder, fetchCallback }) => {
         ref={inputRef}
         onChange={(e) => setSearchValue(e.target.value)}
         onBlur={(e) => {
-          // if clicked on suggestion, dont trigger unFocus
-          if (
-            e.relatedTarget !== null &&
-            e.relatedTarget.classList.contains('search-suggestion')
-          ) {
-            // console.log('clicked on suggestion');
-          } else {
-            handleUnFocus();
-          }
+          // console.log(e.relatedTarget);
+          // console.log(e.target);
+          // // if clicked on suggestion, dont trigger unFocus
+          // if (
+          //   e.relatedTarget !== null &&
+          //   (e.relatedTarget.classList.contains('search-suggestions') ||
+          //     e.relatedTarget.classList.contains('search-suggestion'))
+          // ) {
+          //   // console.log('clicked on suggestion');
+          // } else {
+          //   // handleUnFocus();
+          // }
         }}
         onKeyDown={(e) => {
           if (e.key === 'Enter') {
@@ -93,19 +101,30 @@ const SearchBar = ({ placeholder, fetchCallback }) => {
           }
         }}
       />
-      {isSearchLoading && (
-        <button className="btn-icon" onClick={handleSearch}>
-          <FontAwesomeIcon
-            icon={faSpinner}
-            className="search-icon spin-animation"
-          />
-        </button>
+
+      {!isSearchLoading && searchSuggestions.length > 0 && (
+        <div className="btn-icon" style={{ marginRight: '1rem' }}>
+          <button onClick={handleUnFocus}>
+            <FontAwesomeIcon icon={faTimes} className="search-icon" />
+          </button>
+        </div>
       )}
-      {!isSearchLoading && (
-        <button className="btn-icon" onClick={handleSearch}>
-          <FontAwesomeIcon icon={faSearch} className="search-icon" />
-        </button>
-      )}
+
+      <div className="btn-icon">
+        {isSearchLoading && (
+          <button onClick={handleSearch}>
+            <FontAwesomeIcon
+              icon={faSpinner}
+              className="search-icon spin-animation"
+            />
+          </button>
+        )}
+        {!isSearchLoading && (
+          <button onClick={handleSearch}>
+            <FontAwesomeIcon icon={faSearch} className="search-icon" />
+          </button>
+        )}
+      </div>
       {searchSuggestions.length > 0 && (
         <section className="search-suggestions">
           <div className="search-suggestions-container">
