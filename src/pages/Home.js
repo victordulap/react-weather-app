@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import '../styles/Home.scss';
 import SearchBar from '../components/SearchBar';
 import { useGlobalContext } from '../context';
-import { useRouteMatch } from 'react-router-dom';
+import { useRouteMatch, useHistory } from 'react-router-dom';
 import Slider from '../components/Slider';
 import {
   getDayFromUnix,
@@ -99,6 +99,7 @@ const defaultLocation = {
 const Home = () => {
   // url params
   const { params } = useRouteMatch();
+  const history = useHistory();
 
   // fetching error
   const [fetchingError, setFetchingError] = useState(false);
@@ -148,13 +149,20 @@ const Home = () => {
 
   const fetchLocations = async (locationSearchValue) => {
     const response = await fetch(LOCATION_URL + locationSearchValue);
-    const data = await response.json();
-    return data;
+    try {
+      const data = await response.json();
+      return data;
+    } catch (err) {
+      console.error('err: ' + err);
+      history.push('/404');
+      return null;
+    }
   };
 
   // async functions
   const setLocationAsync = async (url) => {
-    setLocation(await fetchLocations(url));
+    const newLocation = await fetchLocations(url);
+    setLocation(newLocation);
   };
 
   const setWeatherDataAsync = async (lat, lon) => {
@@ -178,13 +186,18 @@ const Home = () => {
       setLocation(defaultLocation);
       setMetrics('metric');
     }
-  }, [params.country, params.state_name, params.location_name]);
+  }, [params, params.country, params.state_name, params.location_name]);
 
   // if new location is set, get new weather data
   useEffect(() => {
-    if (location.name !== undefined) {
+    let newLocation = location;
+    if (newLocation === null) {
+      setLocation(defaultLocation);
+      newLocation = defaultLocation;
+    }
+    if (newLocation.name !== undefined) {
       resetWeatherData();
-      const { coord } = location;
+      const { coord } = newLocation;
       // get weather data by coordinates
       setWeatherDataAsync(coord.lat, coord.lon);
     }
@@ -242,7 +255,7 @@ const Home = () => {
 
   if (fetchingError) {
     return (
-      <main className="grid grid-error">
+      <main className="grid-error">
         <h2>ERROR: Too many API calls</h2>
       </main>
     );
@@ -250,7 +263,7 @@ const Home = () => {
 
   if (currentWeather.dt === undefined) {
     return (
-      <main className="grid grid-loading">
+      <main className="grid-loading">
         <div className="lds-roller">
           <div></div>
           <div></div>

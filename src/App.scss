@@ -76,3 +76,26 @@ h6 {
   font-weight: 400;
 }
 /* end reset styles */
+
+.page-not-found {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  text-align: center;
+  min-height: 100vh;
+  font-size: 2rem;
+  text-transform: uppercase;
+  line-height: 1.5;
+  color: rgb(42, 46, 49);
+
+  h1 {
+    font-weight: 300;
+  }
+
+  a {
+    font-size: 4rem;
+    font-weight: bold;
+    color: black;
+  }
+}

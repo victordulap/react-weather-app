@@ -81,6 +81,7 @@ body {
     justify-content: center;
     align-items: center;
     font-size: 5rem;
+    height: 100vh;
   }
 
   &-loading {
@@ -88,6 +89,7 @@ body {
     justify-content: center;
     align-items: center;
     font-size: 5rem;
+    height: 100vh;
 
     .lds-roller {
       display: inline-block;

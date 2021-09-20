@@ -1,7 +1,6 @@
 import './App.scss';
 import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
 import Home from './pages/Home';
-import About from './pages/About';
 import PageNotFound from './pages/PageNotFound';
 
 function App() {
@@ -11,8 +10,8 @@ function App() {
         <Route exact path="/">
           <Home />
         </Route>
-        <Route path="/about">
-          <About />
+        <Route path="/home">
+          <Home />
         </Route>
         <Route path="/:country/:state_name/:location_name">
           <Home />
