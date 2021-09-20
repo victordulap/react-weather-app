@@ -71,6 +71,7 @@ const SearchBar = ({ placeholder, fetchCallback }) => {
         className="search-input"
         type="text"
         name="search-bar"
+        autoComplete="off"
         placeholder={placeholder}
         value={searchValue}
         ref={inputRef}
