@@ -213,6 +213,10 @@ body {
         width: 90%;
         margin: 4em auto 1em;
       }
+
+      @media screen and (max-width: 1000px) {
+        width: 50%;
+      }
     }
 
     .selected-location {
