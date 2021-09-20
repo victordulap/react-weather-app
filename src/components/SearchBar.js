@@ -130,7 +130,7 @@ const SearchBar = ({ placeholder, fetchCallback }) => {
                   }
                   {suggestion.name.slice(
                     oldSearchValue.length,
-                    suggestion.name.length - 1
+                    suggestion.name.length
                   )}
                   , {suggestion.country}
                   {suggestion.state.length > 0 && ', ' + suggestion.state}
