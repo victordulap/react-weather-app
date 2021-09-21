@@ -1,5 +1,9 @@
 # Weather-App
 
+## Check out website!
+
+https://vd-weather-app-react.netlify.app/
+
 ## Screen shots
 
 ### Desktop view
