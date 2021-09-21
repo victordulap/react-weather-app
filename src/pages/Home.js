@@ -17,6 +17,10 @@ import {
 } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import SemiCircleChart from '../components/SemiCircleChart';
+import {
+  celsiusToFahrenheit,
+  metresPerSecondToMilesPerHour,
+} from '../components/utils/unitsConverter';
 
 const LOCATION_URL = 'https://my-api-for-weather-location.herokuapp.com/city/';
 
@@ -133,7 +137,7 @@ const Home = () => {
   };
 
   const fetchWeatherData = async (lat, lon) => {
-    const url = `/.netlify/functions/fetch-weather?lat=${lat}&lon=${lon}&units=${metrics}`;
+    const url = `/.netlify/functions/fetch-weather?lat=${lat}&lon=${lon}&units=metric`;
     const response = await fetch(url);
     if (!response.ok) {
       console.log(`Error: ${response.statusText}`);
@@ -201,7 +205,7 @@ const Home = () => {
       // get weather data by coordinates
       setWeatherDataAsync(coord.lat, coord.lon);
     }
-  }, [location, metrics]);
+  }, [location]);
 
   // if new weather data is set
   useEffect(() => {
@@ -218,13 +222,18 @@ const Home = () => {
         return {
           header: getHoursFromUnix(hour.dt + weatherData.timezone_offset),
           icon: `/assets/weather-icons/${hour.weather[0].icon}.png`,
-          main: [`${Math.round(hour.temp)}°`],
+          main:
+            metrics === 'metric'
+              ? [`${Math.round(hour.temp)}°`]
+              : [`${Math.round(celsiusToFahrenheit(hour.temp))}°`],
           footer: (
             <>
-              <FontAwesomeIcon icon={faWind} />
-              {` ${hour.wind_speed.toFixed(1)} ${
-                metrics === 'metric' ? 'm/s' : 'mph'
-              }`}
+              <FontAwesomeIcon icon={faWind} />{' '}
+              {metrics === 'metric'
+                ? `${hour.wind_speed.toFixed(1)} m/s`
+                : `${metresPerSecondToMilesPerHour(hour.wind_speed).toFixed(
+                    1
+                  )} mph`}
             </>
           ),
         };
@@ -235,23 +244,28 @@ const Home = () => {
         return {
           header: getDayFromUnix(day.dt + weatherData.timezone_offset),
           icon: `/assets/weather-icons/${day.weather[0].icon}.png`,
-          main: [
-            `${Math.round(day.temp.max)}°`,
-            `${Math.round(day.temp.min)}°`,
-          ],
+          main:
+            metrics === 'metric'
+              ? [`${Math.round(day.temp.max)}°`, `${Math.round(day.temp.min)}°`]
+              : [
+                  `${Math.round(celsiusToFahrenheit(day.temp.max))}°`,
+                  `${Math.round(celsiusToFahrenheit(day.temp.min))}°`,
+                ],
           footer: (
             <>
-              <FontAwesomeIcon icon={faWind} />
-              {` ${Math.round(day.temp.max)} ${
-                metrics === 'metric' ? 'm/s' : 'mph'
-              }`}
+              <FontAwesomeIcon icon={faWind} />{' '}
+              {metrics === 'metric'
+                ? `${day.wind_speed.toFixed(1)} m/s`
+                : `${metresPerSecondToMilesPerHour(day.wind_speed).toFixed(
+                    1
+                  )} mph`}
             </>
           ),
         };
       });
       setSlidesDataWeek(dataForWeekSlides);
     }
-  }, [weatherData, metrics]); // added metrics
+  }, [weatherData, metrics]);
 
   if (fetchingError) {
     return (
@@ -302,12 +316,19 @@ const Home = () => {
               </div>
               <div className="weather-temperature">
                 <h2 className="weather-temperature-number">
-                  {Math.round(currentWeather.temp)}°
-                  {metrics === 'metric' ? 'C' : 'F'}
+                  {metrics === 'metric'
+                    ? `${Math.round(currentWeather.temp)}°C`
+                    : `${Math.round(
+                        celsiusToFahrenheit(currentWeather.temp)
+                      )}°F`}
                 </h2>
                 <p className="weather-temperature-feels-like">
-                  feels like {Math.round(currentWeather.feels_like)}°
-                  {metrics === 'metric' ? 'C' : 'F'}
+                  feels like{' '}
+                  {metrics === 'metric'
+                    ? `${Math.round(currentWeather.feels_like)}°C`
+                    : `${Math.round(
+                        celsiusToFahrenheit(currentWeather.feels_like)
+                      )}°F`}
                 </p>
               </div>
               <div className="weather-current-date">
@@ -446,7 +467,13 @@ const Home = () => {
                   </header>
                   <main className="today-highlights-card-main">
                     <h4 className="today-highlights-card-main-text">
-                      <strong>{currentWeather.wind_speed.toFixed(1)}</strong>{' '}
+                      <strong>
+                        {metrics === 'metric'
+                          ? currentWeather.wind_speed.toFixed(1)
+                          : metresPerSecondToMilesPerHour(
+                              currentWeather.wind_speed
+                            ).toFixed(1)}
+                      </strong>{' '}
                       {metrics === 'metric' ? 'm/s' : 'mph'}
                     </h4>
                   </main>

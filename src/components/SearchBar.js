@@ -1,5 +1,4 @@
 import {
-  faCross,
   faSearch,
   faSpinner,
   faTimes,
