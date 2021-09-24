@@ -32,7 +32,7 @@ To Visit App:
 
 `localhost:8888`
 
-## Reflection
+## About
 
 - The main idea of this project was to build a weather web-application with modern UI, using learned technologies and learning more in process.
 - Originally I wanted to build a modern-looking weather web-application that allowed users to pull data from the OpenWeather API based on the selected location. I started this process by using the `create-react-app` boilerplate, then adding `react-router-dom` and `node-sass`.
