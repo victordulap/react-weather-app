@@ -2,7 +2,7 @@
 
 ## Check out website!
 
-https://vd-weather-app-react.netlify.app/
+https://vd-weather-app.netlify.app/
 (Consider waiting ~15 seconds for first location search as the API is hosted on Heroku)
 
 ## Screen shots
