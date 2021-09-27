@@ -352,14 +352,14 @@ const Home = () => {
                 {currentWeather.rain !== undefined && (
                   <article className="current-weather-state">
                     <img src="/assets/weather-icons/09d.png" alt="cloud img" />
-                    <p>rain - {currentWeather.rain['1h'] * 100}%</p>
+                    <p>rain - {Math.round(currentWeather.rain['1h'] * 100)}%</p>
                   </article>
                 )}
                 {/* snow */}
                 {currentWeather.snow !== undefined && (
                   <article className="current-weather-state">
                     <img src="/assets/weather-icons/13d.png" alt="cloud img" />
-                    <p>rain - {currentWeather.snow['1h'] * 100}%</p>
+                    <p>rain - {Math.round(currentWeather.snow['1h'] * 100)}%</p>
                   </article>
                 )}
               </div>
