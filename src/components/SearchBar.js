@@ -1,8 +1,4 @@
-import {
-  faSearch,
-  faSpinner,
-  faTimes,
-} from '@fortawesome/free-solid-svg-icons';
+import { faSearch, faSpinner, faTimes } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import React, { useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
@@ -52,11 +48,7 @@ const SearchBar = ({ placeholder, fetchCallback }) => {
   };
 
   return (
-    <div
-      className={`search-bar ${
-        searchSuggestions.length > 0 ? 'search-bar-suggestions' : ''
-      }`}
-    >
+    <div className={`search-bar ${searchSuggestions.length > 0 ? 'search-bar-suggestions' : ''}`}>
       {isSearchValueShort ? (
         <div className="number-of-results" style={{ color: '#e07e7e' }}>
           Enter at least 3 letters
@@ -112,10 +104,7 @@ const SearchBar = ({ placeholder, fetchCallback }) => {
       <div className="btn-icon">
         {isSearchLoading && (
           <button onClick={handleSearch}>
-            <FontAwesomeIcon
-              icon={faSpinner}
-              className="search-icon spin-animation"
-            />
+            <FontAwesomeIcon icon={faSpinner} className="search-icon spin-animation" />
           </button>
         )}
         {!isSearchLoading && (
@@ -132,26 +121,12 @@ const SearchBar = ({ placeholder, fetchCallback }) => {
                 onClick={() => handleSelectSuggestion()}
                 key={`suggestion-${index}`}
                 className="search-suggestion"
-                to={`/${suggestion.country}/${
-                  suggestion.state.length > 0 ? suggestion.state + '/' : ''
-                }${suggestion.name}`}
+                to={`/${suggestion.country}/${suggestion.state.length > 0 ? suggestion.state + '/' : ''}${suggestion.name}`}
               >
-                <img
-                  src={`https://www.countryflags.io/${suggestion.country}/flat/24.png`}
-                  alt={suggestion.country}
-                  className="flag"
-                />
+                <img src={`https://flagcdn.com/w20/${suggestion.country.toLowerCase()}.png`} alt={suggestion.country} className="flag" />
                 <p>
-                  {
-                    <span>
-                      {suggestion.name.slice(0, oldSearchValue.length)}
-                    </span>
-                  }
-                  {suggestion.name.slice(
-                    oldSearchValue.length,
-                    suggestion.name.length
-                  )}
-                  , {suggestion.country}
+                  {<span>{suggestion.name.slice(0, oldSearchValue.length)}</span>}
+                  {suggestion.name.slice(oldSearchValue.length, suggestion.name.length)}, {suggestion.country}
                   {suggestion.state.length > 0 && ', ' + suggestion.state}
                 </p>
               </Link>
